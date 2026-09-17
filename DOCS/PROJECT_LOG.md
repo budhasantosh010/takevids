@@ -93,3 +93,39 @@ Verification/evidence:
 
 Status: DONE
 Evidence level: E4
+
+## 2026-09-17 20:15 — v0 simplified to reference-or-proven-kit + approved provider boundary
+
+User asked:
+- Make TakeVids feel as simple as Lovable.
+- Remove the timeline from the current product.
+- Keep reverse engineering as the main selling point, but let users without a reference choose generalized proven kits Santosh builds beforehand.
+- Use one simple provider layer that can later reach Anthropic/OpenAI/Google/OpenRouter/NVIDIA while users see only TakeVids-tested models.
+- Start cheap with NVIDIA-hosted models until the real workflow works end to end.
+- Keep early video storage/infrastructure within roughly $10–20/month where practical.
+
+I did:
+- Added a Lovable-style home with exactly two starts: `Reverse engineer a video` and `Use a proven kit`.
+- Added three deterministic proven-kit examples and a reducer event that can start from a kit without a reference.
+- Removed the visible timeline and supporting-media panel from v0.
+- Simplified the workspace to chat/instructions + live video result + Video Kit only when a kit actually exists.
+- Added an approved/enabled model registry. Only `GLM 5.3 Flash` via the NVIDIA NIM test route is currently visible; future Anthropic/DeepSeek routes remain disabled and hidden.
+- Added `providerGateway.ts` as the server-side LiteLLM-ready policy contract. It refuses disabled/unapproved routes and contains no credentials or external calls.
+- Rewrote browser automation to verify both reference and proven-kit paths and assert no `.timeline` exists.
+- Documented the recommended test architecture: LiteLLM provider gateway, NVIDIA first test upstream, local/Docker isolated workspace next, R2 for future video objects and optional Supabase for metadata/auth.
+
+Why:
+The highest-risk question is whether TakeVids can reproduce the proven reference → kit → new footage → finished video workflow with a real model. More UI, media controls, providers or infrastructure before that works would add complexity without reducing that risk.
+
+Outcome:
+The deterministic v0 now matches the intended simple mental model and has a provider boundary ready for the first live vertical slice.
+
+Verification/evidence:
+- `npm test`: 11/11 PASS across 4 test files.
+- `npm run lint`: PASS.
+- `npm run build`: PASS.
+- `npm run test:visual`: PASS for reference + proven-kit paths, no timeline, zero console/page/network errors, responsive overflow checks PASS.
+- Visual screenshots inspected: home, reference workspace, kit-ready, proven-kit start, compact desktop.
+
+Status: DONE
+Evidence level: E4

@@ -44,7 +44,7 @@ Consequences: Fast local iteration on port 2500, strong typing, clean future ada
 
 ## DEC-005 — Five-surface product IA
 Date: 2026-09-17
-Status: accepted
+Status: historical; superseded for v0 by DEC-008 and DEC-009
 
 Context: The user wants the product to feel as simple as Lovable while preserving maximum editing quality internally.
 
@@ -75,3 +75,35 @@ Context: The first prototype included a far-left rail for Projects, Kits, Librar
 Decision: Remove the rail from the active workspace. Global navigation returns only when those destinations are real.
 
 Consequences: The current product is a focused two-pane Chat ↔ Video workspace with no false affordances. Future app-level navigation can be added outside this editor shell.
+
+## DEC-008 — Remove timeline entirely from TakeVids v0
+Date: 2026-09-17
+Status: accepted
+
+Context: The current proof does not need users to inspect or manipulate an editing timeline. The system's job is to hide editing complexity and deliver the finished result.
+
+Decision: Remove the timeline from the active v0 interface rather than presenting it as optional inspection.
+
+Consequences: The visible product becomes closer to Lovable: user intent/input on one side, evolving/final output on the other. Timeline concepts stay internal to the future render pipeline.
+
+## DEC-009 — Two v0 entry paths: reference or proven kit
+Date: 2026-09-17
+Status: accepted
+
+Context: Reverse engineering is the main differentiator, but many users will not arrive with a strong reference video. Santosh can build generalized kits from proven examples beforehand.
+
+Decision: The home surface exposes exactly two meaningful starts: `Reverse engineer a video` and `Use a proven kit`. A proven kit skips reverse engineering and goes directly to new footage.
+
+Consequences: New users can get value immediately while repeat/power users can create highly specific reusable workflows from references.
+
+## DEC-010 — LiteLLM-ready approved-model registry; NVIDIA NIM first for testing
+Date: 2026-09-17
+Status: accepted
+
+Context: TakeVids needs access to many AI providers over time but must expose only models that have been tested for the workflow. Early end-to-end testing should be inexpensive.
+
+Decision: Keep a TakeVids-owned approved model registry above a provider gateway. Design routing metadata for LiteLLM-compatible model identifiers, start with NVIDIA NIM routes for inexpensive testing, and keep real credentials/provider calls out of the frontend.
+
+Alternatives considered: Integrate every provider SDK directly into UI/backend; expose the full gateway catalog to users; make OpenRouter the permanent application boundary.
+
+Consequences: Provider/model changes remain internal. Users see only certified models. Anthropic/OpenAI/Google/OpenRouter/direct endpoints can be added later without rewriting the product workflow.

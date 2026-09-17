@@ -89,4 +89,14 @@ describe('TakeVids workflow', () => {
     expect(inferMediaKind('audio/mpeg', 'music.mp3')).toBe('audio')
     expect(inferMediaKind('', 'voice.wav')).toBe('audio')
   })
+
+  it('can start from a proven kit without a reference video', () => {
+    let state = createInitialWorkflowState()
+    state = workflowReducer(state, { type: 'SELECT_PROVEN_KIT', kitId: 'kit-founder-reel' })
+
+    expect(state.stage).toBe('kitReady')
+    expect(state.reference).toBeUndefined()
+    expect(state.kit?.id).toBe('kit-founder-reel')
+    expect(state.kit?.sourceName).toBe('TakeVids proven format')
+  })
 })

@@ -147,7 +147,7 @@ export function MediaPanel({
       )}
 
       <div className="media-tip">
-        <span>Drag a card onto the preview or timeline.</span>
+        <span>Drag a card onto the preview when supporting media is re-enabled.</span>
         <span>Or press <strong>Add</strong>.</span>
       </div>
     </div>

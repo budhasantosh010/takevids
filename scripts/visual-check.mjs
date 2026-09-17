@@ -17,23 +17,27 @@ page.on('response', (response) => {
   if (response.status() >= 400) browserErrors.push(`http ${response.status()}: ${response.url()}`)
 })
 
+const assertNoTimeline = async (label) => {
+  const count = await page.locator('.timeline').count()
+  if (count !== 0) browserErrors.push(`${label}: timeline should not exist in TakeVids v0`)
+}
+
 try {
   await page.goto('http://127.0.0.1:2500', { waitUntil: 'networkidle' })
-  await page.screenshot({ path: path.join(outputDir, '01-reference.png') })
+  await assertNoTimeline('home')
+  await page.screenshot({ path: path.join(outputDir, '01-home.png') })
+
+  await page.getByRole('button', { name: /reverse engineer a video/i }).click()
+  await assertNoTimeline('reference workspace')
+  await page.screenshot({ path: path.join(outputDir, '02-reference-workspace.png') })
 
   await page.getByRole('button', { name: /use demo reference/i }).click()
   await page.getByRole('button', { name: /reverse engineer this video/i }).click()
   await page.waitForTimeout(1800)
-  await page.screenshot({ path: path.join(outputDir, '02-kit-ready.png') })
-
-  await page.getByRole('tab', { name: /media/i }).click()
-  await page.getByRole('button', { name: /load demo media/i }).click()
-  const imageCard = page.locator('.asset-card').filter({ hasText: 'customer-proof.png' })
-  await imageCard.getByRole('button', { name: /add/i }).click()
-  await page.screenshot({ path: path.join(outputDir, '03-media-bin.png') })
+  await page.screenshot({ path: path.join(outputDir, '03-kit-ready.png') })
 
   await page.getByRole('button', { name: /use demo footage/i }).click()
-  await page.getByRole('button', { name: /edit this video/i }).click()
+  await page.getByRole('button', { name: /edit my video/i }).click()
   await page.waitForTimeout(1900)
   await page.screenshot({ path: path.join(outputDir, '04-review.png') })
 
@@ -43,13 +47,24 @@ try {
   await page.waitForTimeout(150)
   await page.screenshot({ path: path.join(outputDir, '05-refined.png') })
 
-  await page.getByRole('button', { name: /export video/i }).click()
+  await page.getByRole('button', { name: /finish & download/i }).click()
   await page.waitForTimeout(100)
-  await page.screenshot({ path: path.join(outputDir, '06-export-ready.png') })
+  await page.screenshot({ path: path.join(outputDir, '06-finished.png') })
+
+  await page.getByRole('button', { name: /back to home/i }).click()
+  const founderKit = page.locator('.home-kit-card').filter({ hasText: 'Founder Reel' })
+  await founderKit.click()
+  await assertNoTimeline('proven kit workspace')
+  await page.screenshot({ path: path.join(outputDir, '07-proven-kit-start.png') })
+
+  await page.getByRole('button', { name: /use demo footage/i }).click()
+  await page.getByRole('button', { name: /edit my video/i }).click()
+  await page.waitForTimeout(1900)
+  await page.screenshot({ path: path.join(outputDir, '08-proven-kit-review.png') })
 
   for (const viewport of [
-    { width: 1024, height: 800, name: '07-compact-desktop.png' },
-    { width: 820, height: 900, name: '08-stacked-browser.png' },
+    { width: 1024, height: 800, name: '09-compact-desktop.png' },
+    { width: 820, height: 900, name: '10-stacked-browser.png' },
   ]) {
     await page.setViewportSize({ width: viewport.width, height: viewport.height })
     await page.waitForTimeout(120)
@@ -63,7 +78,7 @@ try {
     for (const error of browserErrors) console.error(`- ${error}`)
     process.exitCode = 1
   } else {
-    console.log('Visual flow completed with no browser console/page/network errors.')
+    console.log('Visual flow completed: reference path + proven-kit path, no timeline, no browser/network errors.')
   }
 } finally {
   await browser.close()

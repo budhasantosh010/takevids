@@ -8,6 +8,7 @@
 | `DOCS/CURRENT_STATE.md` | Current verified facts |
 | `DOCS/REQUIREMENTS.md` | Stable testable user outcomes |
 | `DOCS/DECISIONS.md` | Architectural choices and reasons |
+| `DOCS/PROVIDER_LAYER.md` | Model gateway, approved-model policy, and test-phase storage architecture |
 | `DOCS/FAILURE_REGISTRY.md` | Failures and regression protection |
 | `DOCS/ANTI_DRIFT_PROTOCOL.md` | Short-loop safeguards against long-task quality decay |
 | `DOCS/CHANGE_POLICY.md` | Requirement-to-evidence change workflow |

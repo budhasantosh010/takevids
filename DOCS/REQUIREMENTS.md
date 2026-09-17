@@ -65,12 +65,13 @@ Intent: Let users apply a previously reverse-engineered kit to new footage, opti
 
 Acceptance criteria:
 - New-footage input is represented.
-- Execution model choice is represented separately from reverse-engineering model choice.
+- Reverse-engineering and execution remain distinct model roles internally.
+- **2026-09-17 v0 correction:** execution routing is automatic in the user experience; a second model picker is not required in v0. The user only sees TakeVids-approved choices where a choice materially helps them.
 - Chat refinements update the visible project state.
 - Export-ready completion state is represented.
 
 Required evidence level: E4
-Related decisions: DEC-001, DEC-003
+Related decisions: DEC-001, DEC-003, DEC-010
 
 ## REQ-007 — Frontend-first provider abstraction
 Status: ACTIVE
@@ -111,9 +112,11 @@ Required evidence level: E4
 Related decisions: DEC-001, DEC-005, DEC-007
 
 ## REQ-010 — Universal media workspace
-Status: ACTIVE
+Status: DEFERRED FOR V0
 Source: 2026-09-17 request for a media asset area supporting images, videos, B-roll, audio, SFX and drag/drop.
 Intent: Give TakeVids one simple place for all source media while allowing AI to decide how those assets are used in the kit-constrained edit.
+
+**2026-09-17 v0 scope note:** supporting-media infrastructure remains a later capability, but the active v0 UI intentionally hides the media bin until the core reference → kit → new video → finished video loop works with real models. This preserves the requirement without adding current cognitive load.
 
 Acceptance criteria:
 - One media surface accepts video, image and audio files.
@@ -124,3 +127,33 @@ Acceptance criteria:
 
 Required evidence level: E4
 Related decisions: DEC-005, DEC-006
+
+## REQ-011 — TakeVids v0 is reference-or-proven-kit → finished video
+Status: ACTIVE
+Source: 2026-09-17 user direction comparing TakeVids with Lovable's dashboard and project flow.
+Intent: Reduce the initial product to the smallest understandable loop: either reverse engineer a reference video into a kit, or choose one of Santosh's already-tested generalized kits, then upload new footage and receive the finished edit.
+
+Acceptance criteria:
+- The active v0 UI has no timeline.
+- The first decision is visually limited to `Reverse engineer a video` or `Use a proven kit`.
+- Choosing a proven kit skips reference analysis and moves directly to new-footage input.
+- Reverse engineering remains the primary differentiated path.
+- The user can reach the finished/edit-ready state without understanding NLE concepts.
+
+Required evidence level: E4
+Related decisions: DEC-008, DEC-009
+
+## REQ-012 — Approved-model gateway boundary
+Status: ACTIVE
+Source: 2026-09-17 user direction to support many providers internally while exposing only TakeVids-tested models.
+Intent: Keep provider flexibility behind one internal layer while users see only models explicitly approved by TakeVids.
+
+Acceptance criteria:
+- Model definitions distinguish the public model choice from its provider/gateway routing metadata.
+- Only approved/enabled models are exposed to product selectors.
+- The abstraction can route through LiteLLM-compatible provider/model identifiers without placing credentials in frontend code.
+- NVIDIA NIM can be represented as the first low-cost testing upstream.
+- Direct Anthropic/OpenAI/Google/OpenRouter routes can be added later without changing the user workflow.
+
+Required evidence level: E3
+Related decisions: DEC-010

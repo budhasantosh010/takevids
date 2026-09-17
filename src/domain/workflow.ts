@@ -32,6 +32,8 @@ export interface VideoKit {
   name: string
   status: 'ready'
   sourceName: string
+  summary?: string
+  origin?: 'reference' | 'proven'
   elements: KitElement[]
 }
 
@@ -50,6 +52,7 @@ export interface WorkflowState {
 
 export type WorkflowEvent =
   | { type: 'REFERENCE_SELECTED'; asset: MediaAsset }
+  | { type: 'SELECT_PROVEN_KIT'; kitId: string }
   | { type: 'SET_REVERSE_MODEL'; modelId: string }
   | { type: 'START_ANALYSIS' }
   | { type: 'ANALYSIS_COMPLETED' }
@@ -88,10 +91,53 @@ export const inferMediaRole = (kind: MediaKind, fileName: string): MediaRole => 
   return 'broll'
 }
 
+const baseKitElements: KitElement[] = [
+  { id: 'hook', label: 'Hook rhythm', detail: 'Cold open → payoff tease in first beat', group: 'Story' },
+  { id: 'pacing', label: 'Cut pacing', detail: 'Fast opening cadence, breathing room after proof', group: 'Story' },
+  { id: 'captions', label: 'Caption system', detail: '2-line max, phrase-led emphasis, safe-zone locked', group: 'Visual' },
+  { id: 'type', label: 'Typography', detail: 'Heavy grotesk hierarchy with restrained accent text', group: 'Visual' },
+  { id: 'motion', label: 'Motion language', detail: 'Push-ins, tracked callouts, masked transitions', group: 'Motion' },
+  { id: 'camera', label: 'Camera treatment', detail: 'Subject-first crop with selective punch zooms', group: 'Motion' },
+  { id: 'sound', label: 'Sound grammar', detail: 'Beat-aware cuts, light risers, impact accents', group: 'Audio' },
+  { id: 'mix', label: 'Voice + music mix', detail: 'Voice dominant; music ducks beneath key phrases', group: 'Audio' },
+]
+
+const kitElements = () => baseKitElements.map((element) => ({ ...element }))
+
+export const provenKits: VideoKit[] = [
+  {
+    id: 'kit-founder-reel',
+    name: 'Founder Reel',
+    status: 'ready',
+    sourceName: 'TakeVids proven format',
+    summary: 'Fast hook, clean captions, selective motion and proof-led pacing for founder-led short videos.',
+    origin: 'proven',
+    elements: kitElements(),
+  },
+  {
+    id: 'kit-ai-launch',
+    name: 'AI Launch',
+    status: 'ready',
+    sourceName: 'TakeVids proven format',
+    summary: 'Product-first launch structure with screen proof, feature callouts and tight payoff pacing.',
+    origin: 'proven',
+    elements: kitElements(),
+  },
+  {
+    id: 'kit-youtube-insight',
+    name: 'YouTube Insight',
+    status: 'ready',
+    sourceName: 'TakeVids proven format',
+    summary: 'Longer explanation rhythm with clear chapter beats, visual resets and restrained emphasis.',
+    origin: 'proven',
+    elements: kitElements(),
+  },
+]
+
 export const createInitialWorkflowState = (): WorkflowState => ({
   stage: 'reference',
-  reverseModelId: 'opus-5-max',
-  executionModelId: 'deepseek-v4.1-flash',
+  reverseModelId: 'nvidia-glm-5.3-flash',
+  executionModelId: 'nvidia-glm-5.3-flash',
   revision: 0,
   refinements: [],
   mediaAssets: [],
@@ -99,20 +145,13 @@ export const createInitialWorkflowState = (): WorkflowState => ({
 })
 
 const createKit = (sourceName: string): VideoKit => ({
-  id: 'kit-launch-format',
-  name: 'Launch Story Kit',
+  id: 'kit-reference-format',
+  name: 'Reference Video Kit',
   status: 'ready',
   sourceName,
-  elements: [
-    { id: 'hook', label: 'Hook rhythm', detail: 'Cold open → payoff tease in first beat', group: 'Story' },
-    { id: 'pacing', label: 'Cut pacing', detail: 'Fast opening cadence, breathing room after proof', group: 'Story' },
-    { id: 'captions', label: 'Caption system', detail: '2-line max, phrase-led emphasis, safe-zone locked', group: 'Visual' },
-    { id: 'type', label: 'Typography', detail: 'Heavy grotesk hierarchy with restrained accent text', group: 'Visual' },
-    { id: 'motion', label: 'Motion language', detail: 'Push-ins, tracked callouts, masked transitions', group: 'Motion' },
-    { id: 'camera', label: 'Camera treatment', detail: 'Subject-first crop with selective punch zooms', group: 'Motion' },
-    { id: 'sound', label: 'Sound grammar', detail: 'Beat-aware cuts, light risers, impact accents', group: 'Audio' },
-    { id: 'mix', label: 'Voice + music mix', detail: 'Voice dominant; music ducks beneath key phrases', group: 'Audio' },
-  ],
+  summary: 'Reusable editing rules reverse engineered from your reference video.',
+  origin: 'reference',
+  elements: kitElements(),
 })
 
 const mergeAssets = (current: MediaAsset[], incoming: MediaAsset[]) => {
@@ -133,6 +172,18 @@ export const workflowReducer = (
         executionModelId: state.executionModelId,
         reference: { ...event.asset, kind: event.asset.kind ?? 'video', role: 'reference' },
       }
+    case 'SELECT_PROVEN_KIT': {
+      const kit = provenKits.find((candidate) => candidate.id === event.kitId)
+      return kit
+        ? {
+            ...createInitialWorkflowState(),
+            reverseModelId: state.reverseModelId,
+            executionModelId: state.executionModelId,
+            stage: 'kitReady',
+            kit: { ...kit, elements: kit.elements.map((element) => ({ ...element })) },
+          }
+        : state
+    }
     case 'SET_REVERSE_MODEL':
       return { ...state, reverseModelId: event.modelId }
     case 'START_ANALYSIS':
