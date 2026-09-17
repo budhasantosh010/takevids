@@ -24,6 +24,8 @@ Reverse engineering is the core differentiator. Proven kits exist because many u
 ## Required environment
 
 - Project root: `C:\Users\Lenovo\Music\Startups\Lovable for Video Editors\full code`
+- Canonical GitHub remote: `https://github.com/budhasantosh010/takevids`
+- Git policy: after a coherent change passes its required verification and is committed locally, push `main` to `origin` unless the user explicitly says not to.
 - Platform/runtime: Windows, Node.js/npm, modern Chromium browser
 - Frontend: React 19 + TypeScript + Vite
 - Dev port: **2500 only**

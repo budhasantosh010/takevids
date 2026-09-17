@@ -107,3 +107,23 @@ Decision: Keep a TakeVids-owned approved model registry above a provider gateway
 Alternatives considered: Integrate every provider SDK directly into UI/backend; expose the full gateway catalog to users; make OpenRouter the permanent application boundary.
 
 Consequences: Provider/model changes remain internal. Users see only certified models. Anthropic/OpenAI/Google/OpenRouter/direct endpoints can be added later without rewriting the product workflow.
+
+## DEC-011 — GitHub is the canonical remote mirror
+Date: 2026-09-17
+Status: accepted
+
+Context: The user created `budhasantosh010/takevids` and wants ongoing project work pushed there in addition to remaining in the canonical local workspace.
+
+Decision: Use `https://github.com/budhasantosh010/takevids` as the canonical GitHub remote (`origin`). After a coherent change is verified and committed locally, push it to `origin/main` unless the user explicitly says not to.
+
+Consequences: Local work remains the working source of truth during implementation, while GitHub stays continuously usable as the durable remote copy and collaboration surface.
+
+## DEC-012 — After the live loop works, development becomes customer-feedback-driven
+Date: 2026-09-17
+Status: accepted
+
+Context: The remaining existential risk is whether the real reference → kit → new footage → finished-video loop delivers a result users value quickly enough. Once that is proven, speculative feature breadth has lower priority than customer experience, observed user friction, result quality, speed, reliability, and distribution.
+
+Decision: After the real end-to-end loop is usable, prioritize actual user feedback and marketing/distribution. New product work should primarily fix observed problems, improve outcome quality/speed/reliability, or materially improve acquisition/retention rather than expand the interface by default.
+
+Consequences: The roadmap stays narrow and evidence-driven. More features are not automatically progress.

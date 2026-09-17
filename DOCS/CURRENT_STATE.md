@@ -6,6 +6,7 @@ Last verified: `2026-09-17`
 
 - Name: `TakeVids`
 - Root: `C:\Users\Lenovo\Music\Startups\Lovable for Video Editors\full code`
+- Canonical GitHub remote: `https://github.com/budhasantosh010/takevids`
 - Owner: `Santosh`
 - Primary objective: Make professional reference-driven video editing feel as simple as Lovable: choose a proven workflow or reverse engineer a reference, add footage, and receive the finished edit without learning an NLE.
 

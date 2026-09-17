@@ -129,3 +129,18 @@ Verification/evidence:
 
 Status: DONE
 Evidence level: E4
+
+## 2026-09-17 20:26 — Canonical GitHub remote + post-proof operating loop
+
+User direction:
+- Use `https://github.com/budhasantosh010/takevids` as the GitHub repository and keep pushing project work there.
+- Once the real editing loop is proven and usable, focus product development on user feedback/customer experience and marketing rather than speculative feature accumulation.
+
+Actions:
+- Added the new repository as Git remote `origin`.
+- Preserved the repository's initial one-line README commit by merging its unrelated history instead of force-pushing over it.
+- Kept the full TakeVids README as the resolved canonical README.
+- Recorded the GitHub push policy and feedback-driven post-proof operating principle in project documentation.
+
+Status: DONE
+Evidence level: E3
