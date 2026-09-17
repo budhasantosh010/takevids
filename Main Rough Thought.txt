@@ -1,0 +1,18 @@
+Thoughts
+
+Initial Thought:
+
+So, here’s the main thought, I could have a section in the app that says revere engineer the video and for reverse engineering the video obviously we will need to give a set of frontier models choices but the frontier models like opus 5 at max, fable 5.1, astra max are the frontier models which will be used to reverse engineer the video that the user wants and in the app we will have revere engineer this video the user uploads the video and the video is reversed engineered and after video is reverse engineered, the ussr can build the kit around that video and build the workflow for that video so that the kit is reusable again and again for similar kind of videos. And from the next time, the user can just choose either frontier model or the models with around deepseek v4.1 flash lele models that can take the reverse engineered model and look that a the reference and look at the full kit around that video and user can add a new video they hae and that new video is edited in the same way. 
+And this is the process that has already been proved because I’ve used this same process to reverse engineer, YT shorts, insta reels, longer yt videos and then build the kit the full kit around it and that referenced video and that kit is used to edit new videos with few prompts given here. Users can choose to use the prompts that I use to make these videos or they can just tell the AI to chat and the video is ready to be made. Kind of like lovable but here the product is edited video instead of the website. But this video edit is actually useful.
+Because this process has already happened with me here, what i did was exactly thi process, I took the referenced video and reversed engineered in claude code with opus 5 at max and then after that it reversed engineered and built the it around those components and the new smaller cheaper models like deepseek v4.1 flash looked at the referenced video and kit built around it and edited the video in a similar way like around 80 to 90 % of the referenced video’s style because kit enforce the rule here. 
+I was thinking something like lovable but for the video editing here. Then initially it only becomes video editor that can reverse engineer but later on it could become something like let other people use their kit and make money of of that or we could build a whole giant library of the videos reference that users cna chose and insert their own videos and edit the videos here. I toculd be something like that. 
+And I can see the market here to because everyone wants to reverse engineer a working format in the inta and yt and launch videos so it can just do that here. 
+
+
+
+
+
+
+
+
+

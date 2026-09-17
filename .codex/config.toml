@@ -1,0 +1,7 @@
+# Project-local Codex configuration.
+# Loaded only when this project is trusted.
+# Do not put credentials, providers or global personal preferences here.
+
+[features]
+hooks = true
+

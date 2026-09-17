@@ -1,0 +1,85 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -File hooks/inject_context.ps1",
+            "commandWindows": "powershell -NoProfile -ExecutionPolicy Bypass -File hooks\\inject_context.ps1",
+            "timeout": 30,
+            "statusMessage": "Injecting project spine after session start/compaction"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -File hooks/log_user_message.ps1",
+            "commandWindows": "powershell -NoProfile -ExecutionPolicy Bypass -File hooks\\log_user_message.ps1",
+            "timeout": 30,
+            "statusMessage": "Saving user message to the project transcript"
+          },
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -File hooks/inject_on_prompt.ps1",
+            "commandWindows": "powershell -NoProfile -ExecutionPolicy Bypass -File hooks\\inject_on_prompt.ps1",
+            "timeout": 30,
+            "statusMessage": "Injecting active project rules alongside the prompt"
+          },
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -File hooks/recall.ps1",
+            "commandWindows": "powershell -NoProfile -ExecutionPolicy Bypass -File hooks\\recall.ps1",
+            "timeout": 30,
+            "statusMessage": "Recalling relevant past decisions/messages"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "apply_patch|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -File hooks/inject_decisions_preedit.ps1",
+            "commandWindows": "powershell -NoProfile -ExecutionPolicy Bypass -File hooks\\inject_decisions_preedit.ps1",
+            "timeout": 30,
+            "statusMessage": "Injecting active rules before an edit"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -File hooks/render_decision_tree.ps1",
+            "commandWindows": "powershell -NoProfile -ExecutionPolicy Bypass -File hooks\\render_decision_tree.ps1",
+            "timeout": 60,
+            "statusMessage": "Redrawing the decision tree"
+          },
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -File hooks/goal_convergence.ps1",
+            "commandWindows": "powershell -NoProfile -ExecutionPolicy Bypass -File hooks\\goal_convergence.ps1",
+            "timeout": 30,
+            "statusMessage": "Checking goal convergence"
+          },
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -File hooks/index_semantic.ps1",
+            "commandWindows": "powershell -NoProfile -ExecutionPolicy Bypass -File hooks\\index_semantic.ps1",
+            "timeout": 60,
+            "statusMessage": "Indexing new content for semantic recall"
+          }
+        ]
+      }
+    ]
+  }
+}

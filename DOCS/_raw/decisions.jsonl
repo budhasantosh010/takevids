@@ -1,0 +1,1 @@
+{"_comment":"Append-only decision log. One JSON object per line. Fields: id (DEC-XXX), msg, title, options (array), chosen, parent (DEC-XXX or ROOT), status, commit, ts. First ROOT line is the main goal. Append corrections as new lines with status superseded."}
