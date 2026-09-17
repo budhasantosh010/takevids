@@ -24,7 +24,7 @@ Last verified: `2026-09-17`
 | Universal Media bin for video/image/audio | reducer tests + `artifacts/03-media-bin.png` | E4 | 2026-09-17 |
 | Supporting-media placement state | workflow reducer test + browser flow | E3 | 2026-09-17 |
 | Compact desktop and stacked browser layouts | screenshots `07-compact-desktop.png`, `08-stacked-browser.png`; overflow assertion | E4 | 2026-09-17 |
-| Frontend quality gates | 4 Vitest tests PASS; ESLint PASS; production build PASS; Playwright flow has zero console/page/network errors | E4 | 2026-09-17 |
+| Frontend quality gates | 6 Vitest tests PASS; ESLint PASS; production build PASS; Playwright flow has zero console/page/network errors | E4 | 2026-09-17 |
 
 ## Current product surface
 
@@ -59,7 +59,7 @@ The active workspace intentionally does **not** expose a traditional NLE or dead
 | Unit tests | `npm test` |
 | Lint | `npm run lint` |
 | Production build | `npm run build` |
-| Full browser workflow | `node .\scripts\visual-check.mjs` |
+| Full browser workflow | `npm run test:visual` |
 | Setup verification | `powershell -NoProfile -ExecutionPolicy Bypass -File .\hooks\verify_project_setup.ps1` |
 | Governance verification | `powershell -NoProfile -ExecutionPolicy Bypass -File .\hooks\verify_governance.ps1` |
 | Active implementation plan | `DOCS/plans/2026-09-17-takevids-frontend-foundation.md` |

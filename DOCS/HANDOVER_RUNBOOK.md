@@ -30,7 +30,7 @@ Current information architecture is deliberately limited to **Chat, Preview, Med
 3. Run setup/governance verifiers.
 4. Run `npm test`, `npm run lint`, `npm run build`.
 5. Start/confirm `npm run dev` on `http://localhost:2500`.
-6. For UI changes, run `node .\scripts\visual-check.mjs` and inspect the generated `artifacts/*.png` rather than trusting compilation alone.
+6. For UI changes, run `npm run test:visual` and inspect the generated `artifacts/*.png` rather than trusting compilation alone.
 
 ## Canonical commands
 
@@ -39,10 +39,10 @@ Current information architecture is deliberately limited to **Chat, Preview, Med
 | Verify documentation setup | `powershell -NoProfile -ExecutionPolicy Bypass -File .\hooks\verify_project_setup.ps1` | Required files PASS; no project placeholders remain |
 | Verify governance | `powershell -NoProfile -ExecutionPolicy Bypass -File .\hooks\verify_governance.ps1` | Governance checks PASS |
 | Development | `npm run dev` | App available on `http://localhost:2500` |
-| Unit tests | `npm test` | 4 workflow tests PASS as of 2026-09-17 |
+| Unit tests | `npm test` | 6 tests PASS as of 2026-09-17: workflow + project-foundation regression coverage |
 | Lint | `npm run lint` | PASS |
 | Production build | `npm run build` | PASS |
-| Full UI flow | `node .\scripts\visual-check.mjs` | Reference → kit → media → edit → refine → export ready; no browser/network errors; responsive overflow checks PASS |
+| Full UI flow | `npm run test:visual` | Reference → kit → media → edit → refine → export ready; no browser/network errors; responsive overflow checks PASS |
 
 ## Important code boundaries
 

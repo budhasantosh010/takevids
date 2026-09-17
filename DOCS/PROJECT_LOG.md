@@ -67,3 +67,29 @@ Primary files changed:
 
 Status: DONE
 Evidence level: E4
+
+## 2026-09-17 19:14 — Verification layer hardened
+
+User asked:
+Keep finishing without waiting for approval, keep progress visible, and close the work completely.
+
+I did:
+- Added `src/project-foundation.test.ts` so the Codex/TakeVids scaffold, original `Main Rough Thought.txt`, and absence of unresolved project placeholders are standard Vitest regression checks.
+- Added `npm run test:visual` as the canonical command for the existing real-Chromium workflow verification.
+- Excluded `*.test.ts(x)` files from the browser production TypeScript build rather than polluting browser types with Node-only test dependencies.
+- Re-ran unit tests, ESLint, the production build, and the full visual browser flow.
+
+Why:
+Turn the final acceptance checks into repeatable project-native verification that future AIs can run without knowing Harness-specific commands.
+
+Outcome:
+Verification is now simpler and stronger without changing product behavior.
+
+Verification/evidence:
+- `npm test`: 6/6 PASS across 2 test files.
+- `npm run lint`: PASS.
+- `npm run build`: PASS.
+- `npm run test:visual`: PASS with zero console/page/network errors.
+
+Status: DONE
+Evidence level: E4

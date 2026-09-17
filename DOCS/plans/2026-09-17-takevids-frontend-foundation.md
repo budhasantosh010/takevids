@@ -72,10 +72,10 @@ Users can add assets with a file picker, drop files into the media area, click `
 
 ## Verification evidence
 
-- `npm test` → 4/4 PASS
+- `npm test` → 6/6 PASS, including workflow and project-foundation regression coverage
 - `npm run lint` → PASS
 - `npm run build` → PASS
-- `node .\scripts\visual-check.mjs` → complete flow PASS, zero browser console/page/network errors
+- `npm run test:visual` → complete flow PASS, zero browser console/page/network errors
 - `artifacts/01-reference.png`
 - `artifacts/02-kit-ready.png`
 - `artifacts/03-media-bin.png`

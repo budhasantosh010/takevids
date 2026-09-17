@@ -45,7 +45,7 @@ The development server must run on **`http://localhost:2500`**.
 npm test
 npm run lint
 npm run build
-node .\scripts\visual-check.mjs
+npm run test:visual
 ```
 
 The visual check drives the browser through reference → kit → media → edit → refinement → export-ready and writes screenshots under `artifacts/`.
