@@ -94,3 +94,33 @@ Acceptance criteria:
 - Production build succeeds.
 
 Required evidence level: E3
+
+## REQ-009 — Outcome-first, low-cognitive-load interaction
+Status: ACTIVE
+Source: 2026-09-17 user direction: make it work first, then make it simple enough that a non-expert can reach the final outcome by clicking, dragging, and chatting.
+Intent: Keep quality and capability inside the system while exposing the smallest possible set of user decisions.
+
+Acceptance criteria:
+- The primary product surface is exactly chat + visual video workspace; no traditional NLE is required to get an edit.
+- Only one obvious primary action is presented for each workflow stage.
+- Model routing exists but remains secondary/advanced rather than blocking the default path.
+- Dead/future navigation is excluded from the active workspace.
+- Motion is reserved for state/progress feedback rather than decorative distraction.
+
+Required evidence level: E4
+Related decisions: DEC-001, DEC-005, DEC-007
+
+## REQ-010 — Universal media workspace
+Status: ACTIVE
+Source: 2026-09-17 request for a media asset area supporting images, videos, B-roll, audio, SFX and drag/drop.
+Intent: Give TakeVids one simple place for all source media while allowing AI to decide how those assets are used in the kit-constrained edit.
+
+Acceptance criteria:
+- One media surface accepts video, image and audio files.
+- Media can represent main footage, B-roll, stills, music and SFX.
+- Assets can be added by button or drag/drop and placed into the edit without entering a traditional editor.
+- The interface shows which supporting assets are already used.
+- Main footage and supporting assets remain distinct in workflow state.
+
+Required evidence level: E4
+Related decisions: DEC-005, DEC-006

@@ -60,7 +60,7 @@ try {
 }
 
 $placeholders = Get-ChildItem -LiteralPath $root -File -Recurse |
-    Where-Object { $_.Extension -in @('.md', '.toml', '.json', '.ps1') } |
+    Where-Object { $_.Extension -in @('.md', '.toml', '.json', '.ps1') -and $_.FullName -ne $PSCommandPath } |
     Select-String -Pattern '<PROJECT_NAME>|<PROJECT_ROOT>|<DATE>|<OWNER>' -List
 
 if ($placeholders) {

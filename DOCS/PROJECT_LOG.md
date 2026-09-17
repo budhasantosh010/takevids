@@ -28,3 +28,42 @@ Files changed:
 
 Status: DOING
 Evidence level: E1
+
+## 2026-09-17 18:35 — Frontend product surface completed
+
+User asked:
+- Lock the frontend before model selection/integration.
+- Keep chat on the left and video preview/process on the right.
+- Add a simple media-assets area for video, B-roll, images, audio and SFX with drag/drop.
+- Follow the product philosophy: make the system work internally first, then remove cognitive load until a non-expert can reach the final result by clicking, dragging and chatting.
+- Use design references for visual quality, run on localhost:2500, focus on highest-impact work, and document failures/solutions for later AIs.
+
+I did:
+- Inspected the supplied UI/design/motion reference sites and used their common principles: strong hierarchy, restrained state motion, compact agent controls and one obvious next action.
+- Implemented the full deterministic frontend flow: reference → reverse engineer → Video Kit → new footage → execution → review → chat refinement → export-ready.
+- Added a universal Media panel for video/B-roll/images/music/SFX with file picker, file drop, draggable cards, explicit `Main`/`Add` actions and used-media state.
+- Added typed media roles/kinds and reducer events for adding/placing/removing assets.
+- Kept frontier reverse-engineering and cheaper execution models separate in domain state while making model selectors secondary details rather than the primary user path.
+- Removed the nonfunctional global rail so the active product is a focused two-pane Chat ↔ Video workspace.
+- Added full browser-flow automation and compact/staked layout checks.
+- Updated requirements, decisions, failures, active plan, current state and handoff documentation.
+
+Why:
+The product's differentiator is not a traditional editor. It is the ability to capture a working editing system once and let AI reuse it while users interact through the smallest understandable surface.
+
+Outcome:
+The frontend/product surface is complete for the current phase. Real provider calls and real render/export remain intentionally deferred behind the typed workflow boundaries.
+
+Verification/evidence:
+- `npm test`: 4/4 PASS.
+- `npm run lint`: PASS.
+- `npm run build`: PASS.
+- `node .\scripts\visual-check.mjs`: PASS with zero console/page/network errors.
+- Browser screenshots cover initial, kit, media, review, refinement, export-ready, 1024px compact desktop and 820px stacked browser states.
+- No horizontal overflow detected at 1024px or 820px.
+
+Primary files changed:
+`src/app/App.tsx`, `src/domain/workflow.ts`, `src/domain/media.ts`, `src/features/workspace/ChatPanel.tsx`, `src/features/workspace/PreviewWorkspace.tsx`, `src/features/workspace/MediaPanel.tsx`, `src/styles/index.css`, `scripts/visual-check.mjs`, plus project documentation.
+
+Status: DONE
+Evidence level: E4

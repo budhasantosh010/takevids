@@ -41,3 +41,37 @@ Decision: Build the initial web product with React + TypeScript + Vite and domai
 Alternatives considered: Next.js full-stack immediately; static HTML prototype.
 
 Consequences: Fast local iteration on port 2500, strong typing, clean future adapter boundary for backend/model integrations.
+
+## DEC-005 — Five-surface product IA
+Date: 2026-09-17
+Status: accepted
+
+Context: The user wants the product to feel as simple as Lovable while preserving maximum editing quality internally.
+
+Decision: The working product surface is limited to five concepts: Chat, Preview, Media, Video Kit, and Export. The timeline is inspection/proof of what AI did, not the main editing mechanism.
+
+Alternatives considered: Premiere-style multi-panel NLE; separate upload/media pages; timeline-first editor.
+
+Consequences: Users can complete the core job without learning video-editing software. Advanced controls can be layered in later without changing the mental model.
+
+## DEC-006 — One universal media bin
+Date: 2026-09-17
+Status: accepted
+
+Context: New edits may need main footage, B-roll, images, music and SFX.
+
+Decision: Put all supporting source media in one Media panel that accepts video/image/audio and supports button or drag/drop placement. Keep main footage distinct in domain state so AI and future rendering logic know its role.
+
+Alternatives considered: Separate tabs for footage/B-roll/images/audio; separate upload wizard for each asset type.
+
+Consequences: Fewer decisions and less UI clutter while preserving role information for the execution pipeline.
+
+## DEC-007 — No dead global navigation in the editor
+Date: 2026-09-17
+Status: accepted
+
+Context: The first prototype included a far-left rail for Projects, Kits, Library and Search, but those destinations are not implemented in the current frontend-first phase.
+
+Decision: Remove the rail from the active workspace. Global navigation returns only when those destinations are real.
+
+Consequences: The current product is a focused two-pane Chat ↔ Video workspace with no false affordances. Future app-level navigation can be added outside this editor shell.
