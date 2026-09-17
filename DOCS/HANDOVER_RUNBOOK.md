@@ -28,7 +28,11 @@ Reverse engineering is the core differentiator. Proven kits exist because many u
 - Git policy: after a coherent change passes its required verification and is committed locally, push `main` to `origin` unless the user explicitly says not to.
 - Platform/runtime: Windows, Node.js/npm, modern Chromium browser
 - Frontend: React 19 + TypeScript + Vite
-- Dev port: **2500 only**
+- Backend spine: Node/TypeScript + local filesystem jobs + FFmpeg/ffprobe
+- FFmpeg/ffprobe: installed and verified on this machine
+- Docker: `28.3.2` available
+- Local NVIDIA runtime: not detected (`nvidia-smi` unavailable); do not assume local GPU
+- Dev port: **2500 only** for the user-facing site
 - Browser visual check: `playwright-core` using installed Chrome
 
 ## Safe startup
@@ -47,7 +51,11 @@ Reverse engineering is the core differentiator. Proven kits exist because many u
 | Verify documentation setup | `powershell -NoProfile -ExecutionPolicy Bypass -File .\hooks\verify_project_setup.ps1` | Required files PASS; no project placeholders remain |
 | Verify governance | `powershell -NoProfile -ExecutionPolicy Bypass -File .\hooks\verify_governance.ps1` | Governance checks PASS |
 | Development | `npm run dev` | App available on `http://localhost:2500` |
-| Unit tests | `npm test` | 11 tests PASS as of 2026-09-17 |
+| Unit tests | `npm test` | Frontend/domain + backend tests PASS |
+| Backend-only tests | `npm run test:backend` | Real FFmpeg media tests + job persistence/cleanup + worker-boundary tests PASS |
+| Backend typecheck | `npm run typecheck:server` | PASS |
+| Real backend smoke | `npm run test:backend-smoke` | Creates durable job + analysis artifacts + preview/final MP4 and verifies output geometry |
+| Retention cleanup | `npm run jobs:cleanup` | Clears expired runtime directories according to job retention |
 | Lint | `npm run lint` | PASS |
 | Production build | `npm run build` | PASS |
 | Full UI flow | `npm run test:visual` | Both reference and proven-kit paths PASS; no timeline; no browser/network errors; responsive overflow checks PASS |
@@ -64,7 +72,15 @@ src/features/home/                Lovable-simple two-path entry surface
 src/features/workspace/           simple chat + preview/result surface
 src/features/video-kit/           reusable kit inspector
 scripts/visual-check.mjs          real Chromium v0 workflow verification
-DOCS/PROVIDER_LAYER.md            provider/storage architecture and rollout
+server/media/                      ffprobe metadata + FFmpeg preprocessing
+server/jobs/                       durable per-job workspace + retention cleanup
+server/workers/                    transcription/model/render worker contracts + local renderer
+server/pipeline/jobPipeline.ts     staged media → analysis → preview/final render orchestration
+server/api/                        server application boundary/factory; no browser credentials
+server/smoke/fullPipeline.ts       real local media/job/render integration proof
+server/validation/                 technical output validation (decodable/geometry/audio/duration)
+DOCS/PROVIDER_LAYER.md             provider/storage architecture and rollout
+DOCS/BACKEND_RUNTIME.md            current backend/runtime capabilities and dependencies
 ```
 
 ## Current frontend flow
@@ -129,38 +145,39 @@ Rules:
 
 ## Next highest-impact implementation
 
-Do **not** add more UI or more providers first.
+The local media/job/render spine is now real. Do **not** add more UI or provider breadth first.
 
-Build one live vertical slice:
+Connect the intelligence inside that existing spine:
 
 ```text
 reference.mp4
    ↓
-local/Docker isolated workspace
+CURRENT: durable local job + FFmpeg analysis bundle
    ↓
-FFmpeg frame/audio preparation as needed
+NEXT: WhisperX transcript + word timing
    ↓
-LiteLLM server endpoint
+NEXT: LiteLLM → one approved NVIDIA model
    ↓
-one approved NVIDIA model
+NEXT: Santosh's exact Claude Code reverse-engineering prompts/skills
    ↓
-real kit files saved to workspace
+real Video Kit files in job/kit/
    ↓
-new-footage.mp4
+new footage
    ↓
-apply kit + render
+kit execution logic
    ↓
-finished.mp4
+CURRENT renderer boundary → preview/final MP4
 ```
 
-Once that is reliable, connect the frontier model that has already proved the quality bar.
+Once the NVIDIA test route proves the complete intelligence loop, connect the frontier model that already proved the quality bar.
 
 ## Known intentional gaps
 
-- `providerGateway.ts` is a contract/policy boundary only; no LiteLLM process/API call is wired yet.
-- No real isolated agent workspace yet.
-- No real video analysis/render/export pipeline yet.
-- No auth/persistence/billing/shared projects yet.
+- No real LiteLLM/provider call yet; `LiteLlmModelWorker` fails closed until server credentials are supplied.
+- No real WhisperX transcription yet; the pipeline already creates the required 16 kHz mono WAV and `WhisperXTranscriptionWorker` fails closed until configured.
+- The durable local workspace exists, but the agent tool loop and Santosh's proven Claude Code prompts/skills are not imported yet.
+- Local CPU preview/final MP4 rendering is real; intelligent Video Kit execution is not implemented yet.
+- No auth/persistent Internet projects yet; R2/Supabase remain intentionally deferred until external test users need them.
 - Supporting-media UI is deferred from v0.
 - `DOCS/_raw/user_messages.txt` cannot be claimed as live evidence from ChatGPT Harness; verify the Codex hook inside Codex.
 

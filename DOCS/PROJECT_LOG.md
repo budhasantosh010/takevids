@@ -144,3 +144,36 @@ Actions:
 
 Status: DONE
 Evidence level: E3
+
+## 2026-09-17 21:20 — Real local backend media/job/render spine
+
+User direction:
+- Videos may be vertical, horizontal, square, or other formats; TakeVids must not assume one aspect ratio.
+- Build everything possible now without waiting for provider/cloud credentials.
+- Keep the user informed about what is complete versus what still requires Santosh/external access.
+
+Implemented:
+- Added ffprobe-based format metadata with rotation-aware display geometry, FPS, duration, codec, and audio information.
+- Added real FFmpeg preprocessing that creates metadata JSON, aspect-preserving proxy MP4, thumbnail, and 16 kHz mono transcription WAV when audio exists.
+- Added real-FFmpeg tests covering horizontal, vertical, square, and silent videos.
+- Added durable `.takevids-runtime/jobs/<job-id>/` workspaces with input/analysis/kit/output/temp directories and persisted `job.json` state.
+- Added staged retention/cleanup: temp 24h, analysis 7d, input/output 30d by default; kit does not auto-expire by default.
+- Added server-side transcription/model/render worker contracts. WhisperX and LiteLLM adapters fail closed rather than fabricating output when not configured.
+- Added `LocalFfmpegRenderer` for real CPU preview/final MP4 rendering now, with a replaceable render interface for future GPU/NVENC workers.
+- Added `TakeVidsService` application boundary and local backend factory.
+- Added a real integration smoke test that creates a 360x640 video, persists a job, preprocesses media, renders preview/final output, reprobes the final MP4, and verifies completed state.
+- Added backend typechecking and operational cleanup commands.
+
+Machine capability check:
+- FFmpeg/ffprobe: available.
+- Docker 28.3.2: available.
+- Local NVIDIA runtime: not detected (`nvidia-smi` unavailable).
+
+Still requires Santosh/external configuration:
+- Santosh's exact Claude Code reverse-engineering prompts/skills.
+- LiteLLM/NVIDIA credentials for the first real model run.
+- WhisperX runtime/model (GPU recommended for production speed).
+- R2/Supabase credentials only later when Internet/multi-user storage becomes necessary.
+
+Status: DONE
+Evidence level: E4

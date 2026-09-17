@@ -127,3 +127,23 @@ Context: The remaining existential risk is whether the real reference → kit �
 Decision: After the real end-to-end loop is usable, prioritize actual user feedback and marketing/distribution. New product work should primarily fix observed problems, improve outcome quality/speed/reliability, or materially improve acquisition/retention rather than expand the interface by default.
 
 Consequences: The roadmap stays narrow and evidence-driven. More features are not automatically progress.
+
+## DEC-013 — Media pipeline is format-agnostic and metadata-driven
+Date: 2026-09-17
+Status: accepted
+
+Context: TakeVids may receive vertical, horizontal, square, rotated phone footage, or other dimensions. A separate workflow per aspect ratio would create product and rendering drift.
+
+Decision: Probe every input with ffprobe, derive display geometry from stream dimensions + rotation, and pass normalized metadata to downstream analysis/rendering. Previews may be resized for speed but must preserve aspect ratio. No active backend branch is keyed to a named format such as 9:16 or 16:9.
+
+Consequences: The same job/kit/render pipeline can handle arbitrary formats. Video Kits should express layout in relative/canvas-aware terms rather than absolute coordinates tied to one resolution.
+
+## DEC-014 — Local durable job workspace first; workers are replaceable
+Date: 2026-09-17
+Status: accepted
+
+Context: The real workflow requires long-running preprocessing, transcription, model analysis, kit creation, and rendering. External credentials and cloud infrastructure are not yet required to prove the orchestration contract.
+
+Decision: Build a durable local filesystem job store under a gitignored runtime root with isolated input/analysis/kit/output/temp directories. Define transcription, model, and rendering behind server-side interfaces. Use local FFmpeg/CPU implementations for proof; replace adapters with WhisperX/GPU/LiteLLM/cloud storage later without changing job semantics.
+
+Consequences: The project can prove real media processing now, avoids premature cloud complexity, and keeps provider/GPU/storage choices swappable. Temporary files are disposable; durable inputs/outputs follow explicit retention rules.

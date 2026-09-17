@@ -121,3 +121,75 @@ Run both governance verifiers using `powershell`.
 
 Evidence:
 Setup and governance verifier scripts pass under Windows PowerShell.
+
+## FAIL-006 — Vitest build does not expose `describe.sequential`
+
+Status: FIXED
+First observed: 2026-09-17
+Last reproduced: 2026-09-17
+
+Symptom:
+The first backend media suite failed before running tests with `TypeError: describe.sequential is not a function`.
+
+Scope:
+Backend integration-test harness only.
+
+Root cause:
+The installed Vitest version/configuration does not expose that convenience API on `describe`.
+
+Fix:
+Use normal `describe`; the media cases do not require cross-file concurrency control.
+
+Regression test:
+`npm run test:backend`.
+
+Evidence:
+Real FFmpeg media cases run and pass after the test-harness correction.
+
+## FAIL-007 — Server typecheck rejected mixed denominator inference in FPS parsing
+
+Status: FIXED
+First observed: 2026-09-17
+Last reproduced: 2026-09-17
+
+Symptom:
+`npm run typecheck:server` failed in `probe.ts` because the destructured default denominator was inferred as `string | number` before division.
+
+Scope:
+ffprobe frame-rate parsing.
+
+Root cause:
+A string default was mixed into an array already mapped through `Number`, producing an unnecessarily broad inferred type.
+
+Fix:
+Split the raw numerator/denominator strings first, then convert each explicitly with `Number()`.
+
+Regression test:
+`npm run typecheck:server`.
+
+Evidence:
+Server TypeScript check passes after the explicit conversion.
+
+## FAIL-008 — Fail-closed external worker stubs tripped unused-parameter lint
+
+Status: FIXED
+First observed: 2026-09-17
+Last reproduced: 2026-09-17
+
+Symptom:
+`npm run lint` rejected the intentionally unavailable WhisperX/LiteLLM adapters because their interface request parameters were not consumed before throwing an external-dependency error.
+
+Scope:
+Server worker adapters only.
+
+Root cause:
+The adapters correctly implement the future worker signatures but intentionally do no work until configured.
+
+Fix:
+Keep the full interface signatures and explicitly consume the request with `void request` before failing closed. Do not weaken lint rules and do not fabricate output.
+
+Regression test:
+`npm run lint`.
+
+Evidence:
+Final lint pass must be green on the corrected tree.

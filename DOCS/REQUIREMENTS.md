@@ -157,3 +157,32 @@ Acceptance criteria:
 
 Required evidence level: E3
 Related decisions: DEC-010
+
+## REQ-013 — Format-agnostic media processing
+Status: ACTIVE
+Source: 2026-09-17 user direction that TakeVids must accept vertical, horizontal, square, and other video formats without special-case UX.
+Intent: Treat video geometry as discovered metadata, not a product mode. The backend must inspect each file and preserve its native display orientation/aspect unless a later explicit output format is requested.
+
+Acceptance criteria:
+- ffprobe-derived metadata records coded/display dimensions, rotation, aspect ratio, fps, duration, codecs, and audio presence.
+- Preprocessing works for horizontal, vertical, square, and arbitrary dimensions without hard-coded 9:16/16:9 branches.
+- A normalized analysis bundle can produce a proxy, extracted transcription WAV when audio exists, thumbnail, and metadata JSON while preserving aspect ratio.
+- The future Video Kit uses normalized/relative layout rules rather than assuming one canvas size.
+
+Required evidence level: E4
+Related decisions: DEC-013
+
+## REQ-014 — Durable local video-job workspace
+Status: ACTIVE
+Source: 2026-09-17 user direction to build everything possible now before external credentials/prompts are supplied.
+Intent: Create the real backend spine for long-running video work locally so cloud storage, GPU renderers, WhisperX, and LiteLLM can be swapped in later without changing the product workflow.
+
+Acceptance criteria:
+- Each job owns isolated input, analysis, kit, output, and temp directories plus durable job metadata/state.
+- Long-running stages are represented explicitly rather than relying on one browser HTTP request staying open.
+- Temporary/intermediate files have an enforceable cleanup policy while source/output retention remains configurable.
+- Transcription, model execution, and rendering are defined behind server-side worker interfaces with no browser credentials.
+- A local smoke test produces real media artifacts through the same job/media pipeline.
+
+Required evidence level: E4
+Related decisions: DEC-013, DEC-014

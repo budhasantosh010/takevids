@@ -27,6 +27,12 @@ Last verified: `2026-09-17`
 | LiteLLM-ready provider boundary with NVIDIA NIM first | `providerGateway.ts` + tests | E3 | 2026-09-17 |
 | Responsive desktop/stacked layouts | 1024/820 screenshots + overflow assertion | E4 | 2026-09-17 |
 | Frontend quality gates | 11 Vitest tests PASS; ESLint PASS; production build PASS; browser flow has zero console/page/network errors | E4 | 2026-09-17 |
+| Format-agnostic real media probing/preprocessing | 4 real-FFmpeg tests: horizontal, vertical, square, silent | E4 | 2026-09-17 |
+| Durable local video-job workspace + retention cleanup | `LocalJobStore` tests persist/reload state and enforce staged retention | E3 | 2026-09-17 |
+| Replaceable server worker boundary | Transcription/model/render contracts + fail-closed external adapters | E3 | 2026-09-17 |
+| Real local preview/final render plumbing | `npm run test:backend-smoke` creates real artifacts and verifies final MP4 geometry | E4 | 2026-09-17 |
+| Backend technical output validation | Re-probes output and verifies non-empty/decodable/geometry/audio/duration expectations | E3 | 2026-09-17 |
+| Backend quality gates | 10 backend tests + server typecheck + real local smoke path | E4 | 2026-09-17 |
 
 ## Current v0 product surface
 
@@ -78,9 +84,28 @@ LiteLLM
 - Disabled future routes can exist internally without appearing to users.
 - Full research/rationale: `DOCS/PROVIDER_LAYER.md`.
 
+## Local backend/runtime now
+
+```text
+.takevids-runtime/jobs/<job-id>/
+├─ input/
+├─ analysis/    metadata.json + proxy.mp4 + thumbnail.jpg + transcript.wav when audio exists
+├─ kit/
+├─ output/      preview.mp4 + final.mp4
+├─ temp/
+└─ job.json
+```
+
+- FFmpeg/ffprobe are installed and verified locally.
+- Docker `28.3.2` is available.
+- No local NVIDIA runtime was detected (`nvidia-smi` unavailable), so current real rendering uses CPU FFmpeg.
+- Default retention: temp 24h, analysis 7d, input 30d, output 30d; kits do not auto-expire unless configured.
+- `npm run jobs:cleanup` enforces retention.
+- Full runtime contract: `DOCS/BACKEND_RUNTIME.md`.
+
 ## Test-phase storage direction
 
-- Local filesystem remains acceptable while proving the first real workflow.
+- Local filesystem is now implemented for the single-machine proof.
 - When Internet video storage is needed, use **Cloudflare R2 for video objects** and optionally **Supabase for auth/Postgres/project/job/kit metadata**.
 - Do not require Supabase Pro merely to host test videos; current Pro base pricing is above the user's stated $10–20/month infrastructure target.
 
@@ -89,11 +114,12 @@ LiteLLM
 | Item | Why | Required next action |
 |---|---|---|
 | Exact Codex prompt logging | ChatGPT Harness does not execute the project-local Codex `UserPromptSubmit` hook | Verify when opened/trusted in Codex; do not fabricate transcript entries |
-| Real LiteLLM/NVIDIA request | Intentionally deferred; current change establishes the safe abstraction first | Add one server endpoint + server-only credentials, then certify one NVIDIA model end to end |
-| Real frontier-provider reverse engineering | Do not spend on frontier inference until cheap test loop works | Add/pin Anthropic or other frontier route after end-to-end pipeline is reliable |
-| Real isolated agent/video build environment | Current UI still uses deterministic transitions | Start local/Docker workspace with FFmpeg/filesystem/tool execution, then move cloud later if needed |
-| Real render/export | No production render pipeline yet | Connect kit execution to video tooling and verify actual output |
-| Auth/persistent projects | Not needed to prove editing outcome | Add Supabase only when multi-user testing starts |
+| Real LiteLLM/NVIDIA request | Server-side model worker boundary exists, but no credentialed endpoint is configured | Provide/authorize LiteLLM + NVIDIA credentials, then certify one approved model end to end |
+| Real frontier-provider reverse engineering | Do not spend on frontier inference until cheap test loop works | Add/pin Anthropic or other frontier route after NVIDIA/local vertical slice is reliable |
+| Reverse-engineering agent intelligence | Durable local job workspace/media tooling now exists, but it does not yet contain Santosh's proven Claude Code prompt/skills or tool-driving agent loop | Import the exact prompts/skills and connect them to the model worker + isolated workspace |
+| Real transcription | 16 kHz transcription WAV extraction exists; WhisperX worker is fail-closed until configured | Add WhisperX runtime/model; use GPU worker later for production speed |
+| Intelligent kit-based render/export | Real preview/final MP4 rendering is proven, but current local renderer is a plumbing render, not a style-reproducing kit execution engine | Build/execute real Video Kit instructions after reverse-engineering logic is connected |
+| Auth/persistent Internet projects | Not needed to prove editing outcome | Add R2/Supabase only when multi-user testing starts |
 | Supporting-media bin | Deferred from active v0 to reduce cognitive load | Re-enable after core live workflow works |
 
 ## Canonical commands
@@ -102,11 +128,16 @@ LiteLLM
 |---|---|
 | Development | `npm run dev` → `http://localhost:2500` |
 | Unit tests | `npm test` |
+| Backend tests | `npm run test:backend` |
+| Backend typecheck | `npm run typecheck:server` |
+| Real local backend smoke test | `npm run test:backend-smoke` |
+| Enforce local retention | `npm run jobs:cleanup` |
 | Lint | `npm run lint` |
 | Production build | `npm run build` |
 | Full browser workflow | `npm run test:visual` |
 | Provider/storage architecture | `DOCS/PROVIDER_LAYER.md` |
-| Active implementation plan | `DOCS/plans/2026-09-17-takevids-v0-simplification-provider-layer.md` |
+| Backend runtime architecture | `DOCS/BACKEND_RUNTIME.md` |
+| Active implementation plan | `DOCS/plans/2026-09-17-backend-media-job-spine.md` |
 | Product source thought | `Main Rough Thought.txt` |
 
 ## Evidence-level legend

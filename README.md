@@ -45,11 +45,11 @@ LiteLLM
    └─ OpenRouter
 ```
 
-The current source includes only the typed policy/routing boundary. It contains no provider credentials and makes no real external inference request yet. See `DOCS/PROVIDER_LAYER.md`.
+The current source includes the typed policy/routing boundary plus a real local media/job/render backend spine. It contains no provider credentials and makes no real external inference request yet. See `DOCS/PROVIDER_LAYER.md` and `DOCS/BACKEND_RUNTIME.md`.
 
 ## Current phase
 
-The simplified v0 frontend is a deterministic prototype used to lock the product flow before paid model/render integration. The next engineering milestone is one real vertical slice: reference video → isolated workspace → approved NVIDIA test model → real kit files → new footage → rendered MP4.
+The simplified v0 frontend is locked. The backend can now probe arbitrary-format videos, persist isolated jobs, preprocess real media, enforce retention, and render real preview/final MP4 files locally with CPU FFmpeg. The remaining intelligence milestone is: real WhisperX transcript → LiteLLM/NVIDIA model run → Santosh's proven reverse-engineering prompts/skills → real Video Kit files → kit-constrained edit.
 
 ## Local development
 
@@ -64,12 +64,15 @@ The development server must run on **`http://localhost:2500`**.
 
 ```powershell
 npm test
+npm run test:backend
+npm run typecheck:server
+npm run test:backend-smoke
 npm run lint
 npm run build
 npm run test:visual
 ```
 
-The browser check verifies both the reference path and the proven-kit path, asserts that no timeline appears in v0, checks responsive overflow, and fails on browser/page/HTTP errors.
+The backend smoke test creates real media/job/render artifacts locally. The browser check verifies both the reference path and the proven-kit path, asserts that no timeline appears in v0, checks responsive overflow, and fails on browser/page/HTTP errors.
 
 ## Main source areas
 
@@ -82,7 +85,14 @@ src/features/home/                simple two-path home dashboard
 src/features/workspace/           chat + video result workspace
 src/features/video-kit/           reusable kit inspector
 scripts/visual-check.mjs          real Chromium workflow verification
-DOCS/PROVIDER_LAYER.md            provider/storage architecture
+server/media/                      ffprobe + FFmpeg preprocessing
+server/jobs/                       durable local jobs + retention
+server/workers/                    transcription/model/render interfaces + local renderer
+server/pipeline/                   media/job/render orchestration
+server/api/                        server application boundary
+server/smoke/fullPipeline.ts       real local backend integration proof
+DOCS/PROVIDER_LAYER.md             provider/storage architecture
+DOCS/BACKEND_RUNTIME.md             local backend/runtime architecture
 ```
 
 ## Project governance
