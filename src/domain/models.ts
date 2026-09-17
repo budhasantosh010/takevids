@@ -19,6 +19,7 @@ export interface VideoModel {
   badge?: string
   approved: boolean
   enabled: boolean
+  certified: boolean
   inputModalities: InputModality[]
   route: ModelRoute
 }
@@ -30,15 +31,16 @@ export const modelCatalog: VideoModel[] = [
     provider: 'NVIDIA NIM',
     roles: ['reverse-engineer', 'execute'],
     tier: 'Balanced',
-    summary: 'Low-cost test route for proving the full TakeVids workflow before expensive frontier inference is connected.',
-    badge: 'Testing now',
-    approved: true,
-    enabled: true,
+    summary: 'Current NVIDIA multimodal certification candidate. It remains hidden until TakeVids verifies the live LiteLLM route.',
+    badge: 'Certification pending',
+    approved: false,
+    enabled: false,
+    certified: false,
     inputModalities: ['text', 'image'],
     route: {
       gateway: 'litellm',
       upstreamProvider: 'nvidia_nim',
-      providerModelId: 'glm-5.3-flash',
+      providerModelId: 'z-ai/glm-5-3-flash',
     },
   },
   {
@@ -47,10 +49,11 @@ export const modelCatalog: VideoModel[] = [
     provider: 'Anthropic',
     roles: ['reverse-engineer', 'execute'],
     tier: 'Frontier',
-    summary: 'Frontier-quality reverse engineering route to enable after the end-to-end system is certified.',
+    summary: 'Frontier-quality reverse engineering candidate to certify after the inexpensive NVIDIA route proves the full loop.',
     badge: 'Frontier later',
-    approved: true,
+    approved: false,
     enabled: false,
+    certified: false,
     inputModalities: ['text', 'image'],
     route: {
       gateway: 'litellm',
@@ -64,10 +67,11 @@ export const modelCatalog: VideoModel[] = [
     provider: 'DeepSeek',
     roles: ['execute'],
     tier: 'Fast',
-    summary: 'Candidate fast execution route once the reusable Video Kit has constrained the edit.',
+    summary: 'Candidate fast execution route once a reusable Video Kit constrains the edit. Hidden until independently certified.',
     badge: 'Execution candidate',
-    approved: true,
+    approved: false,
     enabled: false,
+    certified: false,
     inputModalities: ['text', 'image'],
     route: {
       gateway: 'litellm',
@@ -78,7 +82,29 @@ export const modelCatalog: VideoModel[] = [
 ]
 
 export const modelsForRole = (role: ModelRole) =>
-  modelCatalog.filter((model) => model.approved && model.enabled && model.roles.includes(role))
+  modelCatalog.filter((model) => model.approved && model.enabled && model.certified && model.roles.includes(role))
 
-export const getModel = (id: string) =>
-  modelCatalog.find((model) => model.id === id) ?? modelsForRole('reverse-engineer')[0] ?? modelCatalog[0]
+const certificationPendingModel: VideoModel = {
+  id: 'model-certification-pending',
+  name: 'Model certification pending',
+  provider: 'TakeVids',
+  roles: ['reverse-engineer', 'execute'],
+  tier: 'Balanced',
+  summary: 'TakeVids is certifying provider routes. Untested models are not available to users.',
+  badge: 'Not live yet',
+  approved: false,
+  enabled: false,
+  certified: false,
+  inputModalities: ['text'],
+  route: {
+    gateway: 'litellm',
+    upstreamProvider: 'nvidia_nim',
+    providerModelId: 'not-routable',
+  },
+}
+
+export const getModel = (id: string) => {
+  const model = modelCatalog.find((candidate) => candidate.id === id)
+  if (model?.approved && model.enabled && model.certified) return model
+  return modelsForRole('reverse-engineer')[0] ?? certificationPendingModel
+}

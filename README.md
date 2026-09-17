@@ -45,7 +45,7 @@ LiteLLM
    └─ OpenRouter
 ```
 
-The current source includes the typed policy/routing boundary plus a real local media/job/render backend spine. It contains no provider credentials and makes no real external inference request yet. See `DOCS/PROVIDER_LAYER.md` and `DOCS/BACKEND_RUNTIME.md`.
+The source now includes a real server-side LiteLLM HTTP worker, a private LiteLLM → NVIDIA NIM proxy configuration, and an NVIDIA certification harness. No provider secrets are committed or sent to the browser. The current machine has no NVIDIA/LiteLLM credentials, so no live NVIDIA inference has been certified yet and no provider model is user-visible. See `DOCS/PROVIDER_LAYER.md`, `DOCS/NVIDIA_MODEL_CERTIFICATION.md`, and `DOCS/BACKEND_RUNTIME.md`.
 
 ## Current phase
 
@@ -68,6 +68,8 @@ npm run test:backend
 npm run typecheck:server
 npm run test:backend-smoke
 npm run test:kit-smoke
+npm run provider:env
+npm run verify:nvidia
 npm run lint
 npm run build
 npm run test:visual
@@ -80,7 +82,7 @@ The backend smoke test creates real media/job/render artifacts locally. The brow
 ```text
 src/domain/workflow.ts            reference/proven-kit workflow state
 src/domain/models.ts              approved model registry + route metadata
-src/domain/providerGateway.ts     LiteLLM-ready server boundary contract
+src/domain/providerGateway.ts     certification-gated provider boundary
 src/app/                          application composition
 src/features/home/                simple two-path home dashboard
 src/features/workspace/           chat + video result workspace
@@ -95,8 +97,12 @@ server/smoke/fullPipeline.ts       real local backend integration proof
 server/agent/                       scoped workspace + Docker sandbox adapter
 server/kits/                        Video Kit envelope + execution routing
 server/instructions/                exact prompt/skill loader
+server/providers/                   NVIDIA catalog + LiteLLM client + certification runner
+litellm/config.yaml                 TakeVids aliases → NVIDIA hosted NIM
+docker/litellm.compose.yml          local LiteLLM proxy definition
 docker/agent/Dockerfile             isolated agent image definition
 DOCS/PROVIDER_LAYER.md              provider/storage architecture
+DOCS/NVIDIA_MODEL_CERTIFICATION.md  current NVIDIA shortlist/certification state
 DOCS/BACKEND_RUNTIME.md             local backend/runtime architecture
 DOCS/AGENT_KIT_SUBSTRATE.md         agent/kit substrate architecture
 ```

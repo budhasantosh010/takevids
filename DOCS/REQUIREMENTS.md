@@ -202,3 +202,19 @@ Acceptance criteria:
 
 Required evidence level: E4
 Related decisions: DEC-015, DEC-016, DEC-017
+
+## REQ-016 — NVIDIA/LiteLLM models require live TakeVids certification before exposure
+Status: ACTIVE
+Source: 2026-09-17 user direction to research recent NVIDIA frontier models and try which ones actually work through LiteLLM.
+Intent: Treat NVIDIA catalog support as research evidence only. A model may become selectable in TakeVids only after the intended provider route and relevant modalities pass the real TakeVids certification harness.
+
+Acceptance criteria:
+- Current NVIDIA hosted candidates are stored separately from the visible product model list with exact provider model IDs and advertised capabilities.
+- LiteLLM routes NVIDIA through server-only credentials; provider secrets never reach browser code or committed config.
+- Certification records distinguish PASS, FAIL, UNSUPPORTED, CREDENTIAL_REQUIRED, and PROXY_UNAVAILABLE.
+- Text/image/video/tool probes are attempted only where appropriate, with GLM-5.3-Flash hosted-video support tested rather than assumed from self-hosted NIM documentation.
+- `modelsForRole` and gateway routing require `approved && enabled && certified`.
+- When no provider credentials exist, the product remains fail-closed and shows no untested model as live.
+
+Required evidence level: E4
+Related decisions: DEC-010, DEC-018

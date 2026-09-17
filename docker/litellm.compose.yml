@@ -1,0 +1,13 @@
+services:
+  litellm:
+    image: docker.litellm.ai/berriai/litellm:main-latest
+    command: ["--config", "/app/config.yaml"]
+    ports:
+      - "4000:4000"
+    environment:
+      NVIDIA_NIM_API_BASE: ${NVIDIA_NIM_API_BASE:-https://integrate.api.nvidia.com/v1}
+      NVIDIA_NIM_API_KEY: ${NVIDIA_API_KEY}
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY}
+    volumes:
+      - ../litellm/config.yaml:/app/config.yaml:ro
+    restart: unless-stopped

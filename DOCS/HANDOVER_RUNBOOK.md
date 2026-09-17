@@ -56,6 +56,9 @@ Reverse engineering is the core differentiator. Proven kits exist because many u
 | Backend typecheck | `npm run typecheck:server` | PASS |
 | Real backend smoke | `npm run test:backend-smoke` | Creates durable job + analysis artifacts + preview/final MP4 and verifies output geometry |
 | Retention cleanup | `npm run jobs:cleanup` | Clears expired runtime directories according to job retention |
+| Check provider env without printing secrets | `npm run provider:env` | Boolean presence only |
+| Start/stop LiteLLM | `npm run litellm:up` / `npm run litellm:down` | Local proxy on port 4000 when Docker/credentials are available |
+| NVIDIA certification | `npm run verify:nvidia` | PASS/FAIL/UNSUPPORTED/CREDENTIAL_REQUIRED/PROXY_UNAVAILABLE report under `.takevids-runtime/` |
 | Lint | `npm run lint` | PASS |
 | Production build | `npm run build` | PASS |
 | Full UI flow | `npm run test:visual` | Both reference and proven-kit paths PASS; no timeline; no browser/network errors; responsive overflow checks PASS |
@@ -65,7 +68,7 @@ Reverse engineering is the core differentiator. Proven kits exist because many u
 ```text
 src/domain/workflow.ts            workflow state + reference/proven kits
 src/domain/models.ts              approved model registry + route metadata
-src/domain/providerGateway.ts     provider/gateway policy boundary; no external call yet
+src/domain/providerGateway.ts     certified-model routing gate; no uncertified provider route
 src/domain/media.ts               browser File → MediaAsset conversion
 src/app/App.tsx                   home/workspace composition + deterministic demo adapter
 src/features/home/                Lovable-simple two-path entry surface
@@ -82,8 +85,12 @@ server/validation/                 technical output validation (decodable/geomet
 server/agent/                      scoped host workspace + Docker isolation adapter
 server/kits/                       Video Kit manifest/validation/execution adapter routing
 server/instructions/               exact ordered prompt/skill loading + hashes
-docker/agent/Dockerfile            isolated agent image definition
+server/providers/                  NVIDIA research catalog + real LiteLLM HTTP client + certification harness
+litellm/config.yaml                 private TakeVids aliases → NVIDIA hosted NIM
+docker/litellm.compose.yml          local LiteLLM proxy definition
+docker/agent/Dockerfile             isolated agent image definition
 DOCS/PROVIDER_LAYER.md             provider/storage architecture and rollout
+DOCS/NVIDIA_MODEL_CERTIFICATION.md current NVIDIA shortlist + machine certification state
 DOCS/BACKEND_RUNTIME.md            current backend/runtime capabilities and dependencies
 DOCS/AGENT_KIT_SUBSTRATE.md        agent/kit/instruction boundaries and proof status
 ```
@@ -137,7 +144,8 @@ Rules:
 
 - Never expose LiteLLM's raw catalog to users.
 - Never place provider secrets in the browser.
-- A model must be `approved && enabled` and support the requested role before routing.
+- A model must be `approved && enabled && certified` and support the requested role before routing.
+- NVIDIA catalog presence or LiteLLM provider support is not certification. Only actual TakeVids certification PASS results may enable a model.
 - Do not silently swap the kit-building model family on failure; fallback must be separately certified.
 - Keep reverse-engineering and execution roles separate internally even when the same test model fills both roles.
 
@@ -163,7 +171,9 @@ NEXT: real WhisperX transcript + word timing
    ↓
 CURRENT: scoped workspace + Docker isolation adapter
    ↓
-NEXT: LiteLLM → one approved NVIDIA model
+CURRENT: LiteLLM NVIDIA config/client/certification harness
+   ↓
+NEXT: add server-only credentials and obtain a real certification PASS
    ↓
 NEXT: Santosh's exact ordered Claude Code prompts/skills
    ↓
@@ -182,7 +192,7 @@ Once the NVIDIA test route proves the complete intelligence loop, compare/enable
 
 ## Known intentional gaps
 
-- No real LiteLLM/provider call yet; `LiteLlmModelWorker` fails closed until server credentials are supplied.
+- No real LiteLLM/NVIDIA provider call yet. The real HTTP client, proxy config and certification runner exist, but `npm run provider:env` verified that NVIDIA/LiteLLM credentials are absent on this machine. The backend therefore remains fail-closed and no model is currently user-visible.
 - No real WhisperX transcription yet; the pipeline already creates the required 16 kHz mono WAV and `WhisperXTranscriptionWorker` fails closed until configured.
 - Santosh's proven Claude Code prompts/skills are not imported yet; the exact ordered/hash-preserving loader is ready under the private instruction root.
 - Docker sandbox policy and image definition exist, but actual local container execution is not yet claimed because the daemon probe was approval-gated in this Harness session.

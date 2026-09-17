@@ -177,3 +177,13 @@ Context: The exact Claude Code prompts/skills are high-value product logic and o
 Decision: Load an explicitly ordered list of prompt/skill files from a configured private root, preserve UTF-8 content without rewriting, and record a SHA-256 hash for each loaded file. Do not auto-discover/reorder instructions implicitly.
 
 Consequences: Santosh can drop the proven files into the private instruction root later without backend code changes, and TakeVids can audit exactly which instruction bytes were used in a run.
+
+## DEC-018 — Catalog presence is not model certification
+Date: 2026-09-17
+Status: accepted
+
+Context: NVIDIA may list a model/free endpoint and LiteLLM may support NVIDIA NIM generally, but TakeVids depends on concrete modality/tool behavior through the exact gateway route. Earlier prototype metadata incorrectly treated the NVIDIA GLM candidate as approved before a live call had passed.
+
+Decision: Keep NVIDIA research candidates in a private certification catalog. Product exposure and server route resolution require three independent booleans: `approved`, `enabled`, and `certified`. Until a real certification succeeds, users see a neutral pending state rather than an untested provider model.
+
+Consequences: Provider/catalog churn cannot silently expose broken models. A live PASS can later enable one model without changing the user workflow, while unsupported or deprecated candidates remain internal.

@@ -36,7 +36,7 @@ Official reference: https://docs.litellm.ai/
 
 LiteLLM is transport/routing, not product policy. TakeVids owns:
 
-1. `approved/enabled` model state.
+1. `approved/enabled/certified` model state. Catalog presence alone is never enough for product exposure.
 2. Which model may reverse engineer a kit.
 3. Which model may execute a kit.
 4. Exact prompts/skills and quality tests.
@@ -48,17 +48,19 @@ Do not enable arbitrary cross-model fallback for kit creation. If a model fails,
 
 ## First testing route
 
-The first route represented in code is:
+The first certification route represented in code is:
 
 ```text
-public TakeVids model id: nvidia-glm-5.3-flash
+internal TakeVids alias: takevids-glm-5-3-flash
        ↓
 LiteLLM
        ↓
-NVIDIA NIM
+nvidia_nim/z-ai/glm-5-3-flash
        ↓
-GLM-5.3-Flash
+NVIDIA hosted API
 ```
+
+This route is **not user-visible yet**. It must produce an actual TakeVids certification PASS before the product registry may mark it approved/enabled/certified.
 
 NVIDIA's current NIM documentation exposes OpenAI-compatible inference APIs. Its current VLM docs list GLM-5.3-Flash and show image and video requests; video inference for the self-hosted GLM-5.3-Flash NIM requires FFmpeg 8. This makes NVIDIA useful for inexpensive end-to-end testing before frontier-provider spend is introduced.
 
@@ -75,13 +77,13 @@ id
 name
 role
 tier
-approved/enabled
+approved/enabled/certified
 input modalities
 ```
 
 Provider API keys, LiteLLM master/virtual keys, raw provider base URLs and billing credentials are server-only.
 
-Current `src/domain/providerGateway.ts` is only the typed contract. It intentionally makes no external request yet.
+`src/domain/providerGateway.ts` is the product certification/routing gate. Real server-side proxy requests are implemented by `server/providers/liteLlmClient.ts`; `litellm/config.yaml` maps TakeVids aliases to NVIDIA NIM. Current machine credentials are absent, so no live provider PASS is claimed yet.
 
 ## Video storage for the 100–500 user test phase
 
@@ -132,14 +134,15 @@ Actual cost depends on average retained storage, number of uploads/reads and ret
 ```text
 NOW
 local deterministic frontend
-+ approved model registry
-+ typed gateway boundary
++ certification-gated model registry
++ real LiteLLM HTTP client/config
++ NVIDIA certification harness
++ local/Docker agent workspace
 
 NEXT
-one server endpoint
-+ LiteLLM
-+ one NVIDIA test model
-+ local/Docker agent workspace
+configure server-only NVIDIA/LiteLLM credentials
++ run live certification
++ enable only actual PASS models
 
 AFTER END-TO-END QUALITY WORKS
 frontier model route

@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { LocalJobStore } from '../jobs/jobStore'
 import { ExternalDependencyRequiredError, LiteLlmModelWorker, WhisperXTranscriptionWorker } from '../workers/externalWorkers'
 import { LocalFfmpegRenderer } from '../workers/localFfmpegRenderer'
+import { createLocalBackend } from './localBackend'
 import { TakeVidsService } from './takevidsService'
 
 const roots: string[] = []
@@ -48,5 +49,16 @@ describe('TakeVidsService worker boundary', () => {
       prompt: 'analyze',
       workspacePath: 'workspace',
     })).rejects.toBeInstanceOf(ExternalDependencyRequiredError)
+  })
+
+  it('switches to the real LiteLLM worker only when proxy URL and proxy key are configured', () => {
+    const unavailable = createLocalBackend(path.join(os.tmpdir(), 'takevids-no-litellm'), {})
+    expect(unavailable.capabilities().models).toMatchObject({ id: 'litellm-approved-models', ready: false })
+
+    const configured = createLocalBackend(path.join(os.tmpdir(), 'takevids-with-litellm'), {
+      LITELLM_BASE_URL: 'http://127.0.0.1:4000/v1',
+      LITELLM_API_KEY: 'proxy-key',
+    })
+    expect(configured.capabilities().models).toMatchObject({ id: 'litellm-http', ready: true })
   })
 })

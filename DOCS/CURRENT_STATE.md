@@ -23,8 +23,9 @@ Last verified: `2026-09-17`
 | Proven kit → new footage without reference | workflow test + `artifacts/07-proven-kit-start.png` | E4 | 2026-09-17 |
 | New footage → automatic edit → refinement → finished state | browser flow + screenshots | E4 | 2026-09-17 |
 | No active v0 timeline | browser assertion across reference/proven-kit paths | E4 | 2026-09-17 |
-| Approved/enabled model filtering | `src/domain/models.test.ts` | E3 | 2026-09-17 |
-| LiteLLM-ready provider boundary with NVIDIA NIM first | `providerGateway.ts` + tests | E3 | 2026-09-17 |
+| Certification-gated model filtering | `src/domain/models.test.ts` + gateway tests | E3 | 2026-09-17 |
+| LiteLLM/NVIDIA provider boundary + real HTTP client/config | `litellm/config.yaml`, `LiteLlmHttpModelWorker`, config/client tests | E3 | 2026-09-17 |
+| NVIDIA September 2026 certification harness | `npm run verify:nvidia` | E3 | 2026-09-17 |
 | Responsive desktop/stacked layouts | 1024/820 screenshots + overflow assertion | E4 | 2026-09-17 |
 | Frontend quality gates | 11 Vitest tests PASS; ESLint PASS; production build PASS; browser flow has zero console/page/network errors | E4 | 2026-09-17 |
 | Format-agnostic real media probing/preprocessing | 4 real-FFmpeg tests: horizontal, vertical, square, silent | E4 | 2026-09-17 |
@@ -79,10 +80,12 @@ LiteLLM
    └─ OpenRouter        ← long tail later
 ```
 
-- Current frontend/provider code makes **no real external model request** and contains no provider secrets.
-- `nvidia-glm-5.3-flash` is the only approved+enabled prototype model in the visible registry.
-- Disabled future routes can exist internally without appearing to users.
-- Full research/rationale: `DOCS/PROVIDER_LAYER.md`.
+- A real server-side LiteLLM HTTP worker and NVIDIA proxy configuration now exist; no provider secrets are committed or sent to the browser.
+- Current machine credential probe found **no NVIDIA API key and no LiteLLM proxy/master key or URL**, so no live NVIDIA provider request has been made or claimed.
+- NVIDIA candidates live in a separate certification catalog. Product routing requires `approved && enabled && certified`.
+- **No model is currently TakeVids-certified or user-visible.** The UI falls back to a neutral `Model certification pending` state.
+- Current hosted certification shortlist and machine results: `DOCS/NVIDIA_MODEL_CERTIFICATION.md`.
+- Full provider/storage architecture: `DOCS/PROVIDER_LAYER.md`.
 
 ## Local backend/runtime now
 
@@ -114,7 +117,7 @@ LiteLLM
 | Item | Why | Required next action |
 |---|---|---|
 | Exact Codex prompt logging | ChatGPT Harness does not execute the project-local Codex `UserPromptSubmit` hook | Verify when opened/trusted in Codex; do not fabricate transcript entries |
-| Real LiteLLM/NVIDIA request | Server-side model worker boundary exists, but no credentialed endpoint is configured | Provide/authorize LiteLLM + NVIDIA credentials, then certify one approved model end to end |
+| Real LiteLLM/NVIDIA request | Proxy config, real HTTP worker and certification harness exist, but `npm run provider:env` verified no NVIDIA/LiteLLM credentials are configured | Add server-only NVIDIA + LiteLLM keys, start proxy, then run `npm run verify:nvidia`; enable only actual PASS models |
 | Real frontier-provider reverse engineering | Do not spend on frontier inference until cheap test loop works | Add/pin Anthropic or other frontier route after NVIDIA/local vertical slice is reliable |
 | Reverse-engineering agent intelligence | Durable local job workspace/media tooling now exists, but it does not yet contain Santosh's proven Claude Code prompt/skills or tool-driving agent loop | Import the exact prompts/skills and connect them to the model worker + isolated workspace |
 | Real transcription | 16 kHz transcription WAV extraction exists; WhisperX worker is fail-closed until configured | Add WhisperX runtime/model; use GPU worker later for production speed |
@@ -136,9 +139,13 @@ LiteLLM
 | Production build | `npm run build` |
 | Full browser workflow | `npm run test:visual` |
 | Provider/storage architecture | `DOCS/PROVIDER_LAYER.md` |
+| NVIDIA certification research/state | `DOCS/NVIDIA_MODEL_CERTIFICATION.md` |
+| Check provider env safely | `npm run provider:env` |
+| Run NVIDIA certification | `npm run certify:nvidia` |
+| Start/stop LiteLLM proxy | `npm run litellm:up` / `npm run litellm:down` |
 | Backend runtime architecture | `DOCS/BACKEND_RUNTIME.md` |
 | Agent/Kit substrate | `DOCS/AGENT_KIT_SUBSTRATE.md` |
-| Active implementation plan | `DOCS/plans/2026-09-17-agent-kit-substrate.md` |
+| Active implementation plan | `DOCS/plans/2026-09-17-nvidia-litellm-certification.md` |
 | Product source thought | `Main Rough Thought.txt` |
 
 ## Evidence-level legend

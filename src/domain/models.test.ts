@@ -1,19 +1,30 @@
 import { describe, expect, it } from 'vitest'
-import { modelCatalog, modelsForRole } from './models'
+import { getModel, modelCatalog, modelsForRole } from './models'
 
-describe('approved model registry', () => {
-  it('exposes only approved and enabled models to the product UI', () => {
+describe('certified model registry', () => {
+  it('exposes only approved, enabled, and certified models to the product UI', () => {
     const exposed = modelsForRole('reverse-engineer')
 
-    expect(exposed.length).toBeGreaterThan(0)
-    expect(exposed.every((model) => model.approved && model.enabled)).toBe(true)
-    expect(exposed.some((model) => model.route.upstreamProvider === 'nvidia_nim')).toBe(true)
+    expect(exposed).toHaveLength(0)
+    expect(exposed.every((model) => model.approved && model.enabled && model.certified)).toBe(true)
   })
 
-  it('can retain future provider routes without exposing them to users', () => {
-    const futureRoutes = modelCatalog.filter((model) => !model.enabled)
+  it('keeps NVIDIA research candidates in the catalog without exposing them before certification', () => {
+    const glm = modelCatalog.find((model) => model.id === 'nvidia-glm-5.3-flash')
 
-    expect(futureRoutes.some((model) => model.route.upstreamProvider === 'anthropic')).toBe(true)
-    expect(modelsForRole('reverse-engineer').every((model) => model.enabled)).toBe(true)
+    expect(glm).toMatchObject({
+      approved: false,
+      enabled: false,
+      certified: false,
+      route: { upstreamProvider: 'nvidia_nim', providerModelId: 'z-ai/glm-5-3-flash' },
+    })
+    expect(modelsForRole('reverse-engineer')).not.toContain(glm)
+  })
+
+  it('returns a neutral pending state instead of presenting an uncertified model as selected', () => {
+    expect(getModel('nvidia-glm-5.3-flash')).toMatchObject({
+      id: 'model-certification-pending',
+      certified: false,
+    })
   })
 })

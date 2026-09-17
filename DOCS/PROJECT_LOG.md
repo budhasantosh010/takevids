@@ -213,3 +213,34 @@ This phase proves the safe handoff substrate, not reverse-engineering quality. R
 
 Status: DONE
 Evidence level: E4 plumbing
+
+## 2026-09-17 23:00 — NVIDIA September 2026 research + LiteLLM certification layer
+
+User direction:
+- Research the recent September 2026 frontier/near-frontier models available through NVIDIA.
+- Try which models actually work through LiteLLM and use only tested models in TakeVids.
+
+Implemented:
+- Researched the current NVIDIA hosted/NIM catalog and created a focused certification shortlist rather than exposing the entire catalog.
+- Added exact NVIDIA hosted model IDs/capability notes for GLM-5.3-Flash, Kimi-K3, GLM-5.3, DeepSeek-V4-Flash-0731, Nemotron-3-Ultra, Muse-Glimmer-30B, and native-video Nemotron-3-Nano-Omni.
+- Kept Qwen3.8-Flash-Next/Qwen3.8-27B separate as self-host NIM research because they are not current ordinary NVIDIA hosted free-endpoint candidates.
+- Added `litellm/config.yaml` with private TakeVids aliases over `nvidia_nim/*` routes and server-only environment credentials.
+- Added Docker Compose definition for a local LiteLLM proxy on port 4000.
+- Added a real `LiteLlmHttpModelWorker` and automatically activates it only when `LITELLM_BASE_URL` + `LITELLM_API_KEY` exist.
+- Added `npm run provider:env` that reports only credential presence booleans and never prints secrets.
+- Added `npm run certify:nvidia`, which records text/image/video/tool results as PASS, FAIL, UNSUPPORTED, CREDENTIAL_REQUIRED, or PROXY_UNAVAILABLE.
+- Added certification gating to the product registry: routing/exposure requires `approved && enabled && certified`.
+- Removed the prototype assumption that GLM-5.3-Flash was already approved/live; the UI now shows a neutral model-certification-pending state until a real provider route passes.
+
+Observed machine state:
+- `NVIDIA_API_KEY`: absent.
+- LiteLLM base URL/master/proxy key: absent.
+- Certification harness therefore made no provider claim and recorded CREDENTIAL_REQUIRED for supported probes; NVIDIA-catalog unsupported modalities remain UNSUPPORTED.
+- No NVIDIA model is currently TakeVids-certified or user-visible.
+
+Next external input:
+- Configure an NVIDIA API key and private LiteLLM proxy/master key server-side, start LiteLLM, then rerun `npm run certify:nvidia`.
+- Enable only the models/modalities that return actual PASS results.
+
+Status: IMPLEMENTED / LIVE CERTIFICATION BLOCKED BY CREDENTIALS
+Evidence level: E3 integration; E4 provider certification pending

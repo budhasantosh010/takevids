@@ -25,8 +25,8 @@ export const providerLayerConfig = {
 export const resolveApprovedRoute = (modelId: string, role: ModelRole): ModelRoute => {
   const model = modelCatalog.find((candidate) => candidate.id === modelId)
 
-  if (!model || !model.approved || !model.enabled || !model.roles.includes(role)) {
-    throw new Error(`Model ${modelId} is not approved for active use as ${role}.`)
+  if (!model || !model.approved || !model.enabled || !model.certified || !model.roles.includes(role)) {
+    throw new Error(`Model ${modelId} is not certified and approved for active use as ${role}.`)
   }
 
   return model.route
