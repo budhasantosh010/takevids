@@ -3,11 +3,10 @@
 - Canonical remote: `https://github.com/budhasantosh010/takevids`
 - Local branch: `main`
 - Remote branch: `origin/main`
-- Final verified commit at sync: `2e200b2`
+- Final pushed commit before this verification run: `cd4ed3d`
 - `git push -u origin main`: PASS
-- Follow-up `git push origin main`: PASS
-- Local `HEAD`: `2e200b2`
-- Remote `origin/main`: `2e200b2`
-- Working tree after push: clean
+- Follow-up pushes: PASS
+- Local `HEAD` and `origin/main` matched at `cd4ed3d` before the final read-only verification suite.
+- Working tree was clean before the final read-only verification suite.
 
 The remote repository originally contained one unrelated initial commit with a one-line README. That commit was preserved via an unrelated-history merge; the full TakeVids README remained canonical. No force-push was used.
