@@ -186,3 +186,19 @@ Acceptance criteria:
 
 Required evidence level: E4
 Related decisions: DEC-013, DEC-014
+
+## REQ-015 — Credential-free agent/kit substrate
+Status: ACTIVE
+Source: 2026-09-17 user direction to keep building everything possible before external model credentials/prompts are supplied.
+Intent: Prepare the exact workspace, Video Kit envelope, and instruction-loading substrate needed by the future reverse-engineering agent without pretending host-process scoping is a security sandbox or inventing a rigid editing DSL before the proven prompts produce real kits.
+
+Acceptance criteria:
+- A scoped workspace API confines file operations to a single job workspace and rejects absolute/path-traversal escape attempts.
+- Executable isolation is represented separately through a Docker sandbox adapter; host filesystem scoping is never described as equivalent to container isolation.
+- Video Kits use a versioned extensible manifest that declares identity, provenance, execution adapter/entrypoint, and required files without assuming one aspect ratio or editing style.
+- Kit validation rejects malformed manifests, unsafe/out-of-kit paths, duplicate declarations, and missing required files.
+- Prompt/skill files are loaded from an allowed private root in explicit caller-defined order, preserving exact content and recording a content hash.
+- A deterministic fixture smoke path may prove plumbing, but must identify itself as non-AI and must not be presented as reverse-engineering quality evidence.
+
+Required evidence level: E4
+Related decisions: DEC-015, DEC-016, DEC-017

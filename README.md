@@ -49,7 +49,7 @@ The current source includes the typed policy/routing boundary plus a real local 
 
 ## Current phase
 
-The simplified v0 frontend is locked. The backend can now probe arbitrary-format videos, persist isolated jobs, preprocess real media, enforce retention, and render real preview/final MP4 files locally with CPU FFmpeg. The remaining intelligence milestone is: real WhisperX transcript → LiteLLM/NVIDIA model run → Santosh's proven reverse-engineering prompts/skills → real Video Kit files → kit-constrained edit.
+The simplified v0 frontend is locked. The backend now probes arbitrary-format videos, persists isolated jobs, preprocesses real media, enforces retention, renders real preview/final MP4 files locally with CPU FFmpeg, validates a versioned Video Kit envelope, confines agent file access to one job workspace, and can load Santosh's future prompt/skill files exactly in caller-defined order with hashes. A Docker isolation adapter/image is defined, but actual local container execution is not yet claimed as verified. The remaining intelligence milestone is: real WhisperX transcript → LiteLLM/NVIDIA model run → Santosh's proven reverse-engineering prompts/skills → real model-generated Video Kit → real kit execution adapter.
 
 ## Local development
 
@@ -67,6 +67,7 @@ npm test
 npm run test:backend
 npm run typecheck:server
 npm run test:backend-smoke
+npm run test:kit-smoke
 npm run lint
 npm run build
 npm run test:visual
@@ -91,8 +92,13 @@ server/workers/                    transcription/model/render interfaces + local
 server/pipeline/                   media/job/render orchestration
 server/api/                        server application boundary
 server/smoke/fullPipeline.ts       real local backend integration proof
-DOCS/PROVIDER_LAYER.md             provider/storage architecture
+server/agent/                       scoped workspace + Docker sandbox adapter
+server/kits/                        Video Kit envelope + execution routing
+server/instructions/                exact prompt/skill loader
+docker/agent/Dockerfile             isolated agent image definition
+DOCS/PROVIDER_LAYER.md              provider/storage architecture
 DOCS/BACKEND_RUNTIME.md             local backend/runtime architecture
+DOCS/AGENT_KIT_SUBSTRATE.md         agent/kit substrate architecture
 ```
 
 ## Project governance

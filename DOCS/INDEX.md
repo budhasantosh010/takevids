@@ -10,6 +10,7 @@
 | `DOCS/DECISIONS.md` | Architectural choices and reasons |
 | `DOCS/PROVIDER_LAYER.md` | Model gateway, approved-model policy, and test-phase storage architecture |
 | `DOCS/BACKEND_RUNTIME.md` | Local media/job/render spine, runtime capabilities, retention, and external dependencies |
+| `DOCS/AGENT_KIT_SUBSTRATE.md` | Scoped agent workspace, Docker isolation policy, Video Kit envelope, and prompt/skill loading |
 | `DOCS/FAILURE_REGISTRY.md` | Failures and regression protection |
 | `DOCS/ANTI_DRIFT_PROTOCOL.md` | Short-loop safeguards against long-task quality decay |
 | `DOCS/CHANGE_POLICY.md` | Requirement-to-evidence change workflow |

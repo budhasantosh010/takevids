@@ -79,8 +79,13 @@ server/pipeline/jobPipeline.ts     staged media → analysis → preview/final r
 server/api/                        server application boundary/factory; no browser credentials
 server/smoke/fullPipeline.ts       real local media/job/render integration proof
 server/validation/                 technical output validation (decodable/geometry/audio/duration)
+server/agent/                      scoped host workspace + Docker isolation adapter
+server/kits/                       Video Kit manifest/validation/execution adapter routing
+server/instructions/               exact ordered prompt/skill loading + hashes
+docker/agent/Dockerfile            isolated agent image definition
 DOCS/PROVIDER_LAYER.md             provider/storage architecture and rollout
 DOCS/BACKEND_RUNTIME.md            current backend/runtime capabilities and dependencies
+DOCS/AGENT_KIT_SUBSTRATE.md        agent/kit/instruction boundaries and proof status
 ```
 
 ## Current frontend flow
@@ -145,38 +150,43 @@ Rules:
 
 ## Next highest-impact implementation
 
-The local media/job/render spine is now real. Do **not** add more UI or provider breadth first.
+The credential-free plumbing and handoff substrate are now real. Do **not** add more UI or provider breadth first.
 
-Connect the intelligence inside that existing spine:
+Connect only the missing intelligence inside those proven boundaries:
 
 ```text
 reference.mp4
    ↓
-CURRENT: durable local job + FFmpeg analysis bundle
+CURRENT: durable job + FFmpeg analysis bundle
    ↓
-NEXT: WhisperX transcript + word timing
+NEXT: real WhisperX transcript + word timing
+   ↓
+CURRENT: scoped workspace + Docker isolation adapter
    ↓
 NEXT: LiteLLM → one approved NVIDIA model
    ↓
-NEXT: Santosh's exact Claude Code reverse-engineering prompts/skills
+NEXT: Santosh's exact ordered Claude Code prompts/skills
    ↓
-real Video Kit files in job/kit/
+CURRENT: validated/versioned Video Kit envelope
+   ↓
+real model-generated Video Kit files
    ↓
 new footage
    ↓
-kit execution logic
+NEXT: real kit execution adapter based on the first real kit
    ↓
 CURRENT renderer boundary → preview/final MP4
 ```
 
-Once the NVIDIA test route proves the complete intelligence loop, connect the frontier model that already proved the quality bar.
+Once the NVIDIA test route proves the complete intelligence loop, compare/enable the frontier model that already proved the quality bar.
 
 ## Known intentional gaps
 
 - No real LiteLLM/provider call yet; `LiteLlmModelWorker` fails closed until server credentials are supplied.
 - No real WhisperX transcription yet; the pipeline already creates the required 16 kHz mono WAV and `WhisperXTranscriptionWorker` fails closed until configured.
-- The durable local workspace exists, but the agent tool loop and Santosh's proven Claude Code prompts/skills are not imported yet.
-- Local CPU preview/final MP4 rendering is real; intelligent Video Kit execution is not implemented yet.
+- Santosh's proven Claude Code prompts/skills are not imported yet; the exact ordered/hash-preserving loader is ready under the private instruction root.
+- Docker sandbox policy and image definition exist, but actual local container execution is not yet claimed because the daemon probe was approval-gated in this Harness session.
+- Video Kit manifest validation and adapter routing are real; the only current execution adapter is explicitly fixture-only/non-AI. The real adapter should be designed from the first real model-generated kit, not guessed beforehand.
 - No auth/persistent Internet projects yet; R2/Supabase remain intentionally deferred until external test users need them.
 - Supporting-media UI is deferred from v0.
 - `DOCS/_raw/user_messages.txt` cannot be claimed as live evidence from ChatGPT Harness; verify the Codex hook inside Codex.

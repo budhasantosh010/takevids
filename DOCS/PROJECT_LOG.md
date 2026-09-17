@@ -177,3 +177,39 @@ Still requires Santosh/external configuration:
 
 Status: DONE
 Evidence level: E4
+
+## 2026-09-17 22:28 — Credential-free agent + Video Kit substrate
+
+User direction:
+- Keep building everything possible without waiting for external credentials.
+- Preserve arbitrary video formats and the simple v0 user experience.
+- Separate the pieces that can be finished now from the pieces that require Santosh/external access.
+
+Implemented:
+- Added a path-confined `ScopedWorkspace` host file API that rejects absolute paths, slash/backslash traversal, NUL paths, and symlink escapes.
+- Explicitly documented that host path/cwd scoping is **not** executable isolation.
+- Added a Docker sandbox adapter whose default policy disables network, uses a read-only root filesystem, drops all capabilities, enables no-new-privileges, limits PIDs/memory/CPU, and mounts only the selected job workspace.
+- Added `docker/agent/Dockerfile` with Node, Python, Git and FFmpeg. Actual daemon/container execution remains unverified because the Harness Docker probe was approval-gated.
+- Added a versioned extensible Video Kit envelope/validator with execution adapter routing, required-file validation, optional SHA-256 verification, and no fixed aspect-ratio/style DSL.
+- Added exact ordered prompt/skill loading from a private gitignored root, preserving UTF-8 content and recording SHA-256 hashes.
+- Added the explicitly non-AI `takevids.fixture.identity.v1` adapter and deterministic kit builder for plumbing tests only.
+- Added `npm run test:kit-smoke`, which proves a 320x180 reference job can produce/reuse a valid fixture kit on 180x320 new footage and create a technically valid real MP4.
+
+Verification so far:
+- Scoped workspace tests: 4/4 PASS.
+- Video Kit tests: 7/7 PASS.
+- Instruction loader tests: 5/5 PASS.
+- Docker policy tests: 2/2 PASS.
+- Full project suite: 39/39 PASS.
+- Server TypeScript: PASS.
+- Fixture kit smoke: PASS and explicitly reports `fixture-only-not-ai`.
+- Original backend smoke: PASS.
+- ESLint: PASS.
+- Production build: PASS.
+- Real Chromium v0 flow: PASS with no browser/network errors.
+
+Important boundary:
+This phase proves the safe handoff substrate, not reverse-engineering quality. Real intelligence still requires Santosh's exact Claude Code prompts/skills, real transcription, and a credentialed approved model route.
+
+Status: DONE
+Evidence level: E4 plumbing

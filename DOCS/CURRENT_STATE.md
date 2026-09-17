@@ -137,7 +137,8 @@ LiteLLM
 | Full browser workflow | `npm run test:visual` |
 | Provider/storage architecture | `DOCS/PROVIDER_LAYER.md` |
 | Backend runtime architecture | `DOCS/BACKEND_RUNTIME.md` |
-| Active implementation plan | `DOCS/plans/2026-09-17-backend-media-job-spine.md` |
+| Agent/Kit substrate | `DOCS/AGENT_KIT_SUBSTRATE.md` |
+| Active implementation plan | `DOCS/plans/2026-09-17-agent-kit-substrate.md` |
 | Product source thought | `Main Rough Thought.txt` |
 
 ## Evidence-level legend

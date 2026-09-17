@@ -193,3 +193,51 @@ Regression test:
 
 Evidence:
 Final lint pass must be green on the corrected tree.
+
+## FAIL-009 — Agent/kit smoke used stale guessed backend field names
+
+Status: FIXED
+First observed: 2026-09-17
+Last reproduced: 2026-09-17
+
+Symptom:
+`npm run typecheck:server` rejected the new kit smoke because it used job kind `edit` instead of the existing `apply-kit` contract and used `width`/`height`/`minDurationSeconds` instead of the validator's `displayWidth`/`displayHeight`/`minimumDurationSeconds` fields.
+
+Scope:
+Credential-free kit substrate integration smoke.
+
+Root cause:
+The new smoke test was initially written from the conceptual names rather than reusing the exact existing backend types.
+
+Fix:
+Read the existing `JobKind` and `OutputExpectations` definitions and update the smoke to their exact canonical names. Keep strict server TypeScript enabled.
+
+Regression test:
+`npm run typecheck:server` and `npm run test:kit-smoke`.
+
+Evidence:
+Server typecheck and the kit reuse smoke pass after aligning to the real backend contract.
+
+## FAIL-010 — Typed Docker test mocks triggered strict unused-variable lint
+
+Status: FIXED
+First observed: 2026-09-17
+Last reproduced: 2026-09-17
+
+Symptom:
+After making Docker runner mocks explicit enough for TypeScript, ESLint rejected the mock parameters as unused.
+
+Scope:
+Docker sandbox policy tests only.
+
+Root cause:
+The mock must expose the full runner signature so Vitest records typed calls, but the mock implementation does not otherwise need its arguments.
+
+Fix:
+Explicitly consume each typed mock parameter with `void` statements. Do not weaken TypeScript or ESLint rules.
+
+Regression test:
+`npm run lint` and `npm run typecheck:server`.
+
+Evidence:
+Both strict checks pass after the test-only correction.

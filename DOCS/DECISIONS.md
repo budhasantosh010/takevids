@@ -147,3 +147,33 @@ Context: The real workflow requires long-running preprocessing, transcription, m
 Decision: Build a durable local filesystem job store under a gitignored runtime root with isolated input/analysis/kit/output/temp directories. Define transcription, model, and rendering behind server-side interfaces. Use local FFmpeg/CPU implementations for proof; replace adapters with WhisperX/GPU/LiteLLM/cloud storage later without changing job semantics.
 
 Consequences: The project can prove real media processing now, avoids premature cloud complexity, and keeps provider/GPU/storage choices swappable. Temporary files are disposable; durable inputs/outputs follow explicit retention rules.
+
+## DEC-015 — Scoped host workspace is not called a security sandbox
+Date: 2026-09-17
+Status: accepted
+
+Context: The reverse-engineering agent needs filesystem/tool access, but setting a host process working directory does not prevent arbitrary code from reading the rest of the machine.
+
+Decision: Build a path-confined host workspace API for safe file operations, and keep executable isolation as a separate Docker/container boundary. Do not claim host-process `cwd` scoping is equivalent to isolation.
+
+Consequences: TakeVids can safely prepare/read/write job files now, while future arbitrary model-generated code runs only inside an actual container or equivalent sandbox.
+
+## DEC-016 — Video Kit uses a small extensible envelope, not a premature editing DSL
+Date: 2026-09-17
+Status: accepted
+
+Context: Santosh's proven Claude Code reverse-engineering process has not yet been imported, so prescribing a huge fixed JSON schema for cuts, captions, motion, sound and components could encode the wrong abstractions.
+
+Decision: Version only the stable envelope: kit identity/provenance, execution adapter + entrypoint, declared files, and extensible metadata. The detailed editing logic remains ordinary files/code inside the kit until real reverse-engineered kits show which structure deserves standardization.
+
+Consequences: Cheaper execution models can receive a deterministic kit folder while TakeVids avoids freezing speculative internal concepts too early.
+
+## DEC-017 — Proprietary prompts/skills are loaded explicitly and byte-for-byte
+Date: 2026-09-17
+Status: accepted
+
+Context: The exact Claude Code prompts/skills are high-value product logic and ordering/content drift would cause Chinese-whisper degradation.
+
+Decision: Load an explicitly ordered list of prompt/skill files from a configured private root, preserve UTF-8 content without rewriting, and record a SHA-256 hash for each loaded file. Do not auto-discover/reorder instructions implicitly.
+
+Consequences: Santosh can drop the proven files into the private instruction root later without backend code changes, and TakeVids can audit exactly which instruction bytes were used in a run.

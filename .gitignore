@@ -11,6 +11,7 @@ node_modules/
 coverage/
 artifacts/
 .takevids-runtime/
+.takevids-private/
 *.tsbuildinfo
 
 build/
